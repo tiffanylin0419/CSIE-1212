@@ -29,40 +29,6 @@ void printBoard(int* board,int wid,int len){
 
 bool boardIsValid(int* board,int wid,int* arr_wid,int len,int* arr_len){
     
-    
-    //check row
-    //printf("row\n");
-    for(int i=0;i<len;i++){
-        int arr_wid_check[25]={0};
-        for (int j=0;j<arr_wid[i*26+0];j++){
-            arr_wid_check[j]=0;
-        }
-        int k=0;
-        for (int j=0;j<wid;j++){
-            if(board[i*25+j]>0){
-                arr_wid_check[k]++;
-            }
-            else{
-                if(arr_wid_check[k]==0){
-                    continue;
-                }
-                else{
-                    k++;
-                }
-            }
-        } 
-
-        int j;
-        for (j=0;j<arr_wid[i*26+0];j++){
-            if(arr_wid_check[j]!=arr_wid[i*26+j+1]){
-                return 0;
-            }
-        } 
-        if(arr_wid_check[j]!=0){
-            
-            return 0;
-        }
-    }
 
     //check column
     //printf("column\n");
@@ -102,6 +68,57 @@ bool boardIsValid(int* board,int wid,int* arr_wid,int len,int* arr_len){
     return 1;
 }
 
+bool rowIsValid(int* board,int wid,int* arr_wid,int len,int* arr_len){
+    //solved row
+    int r=0;
+    for(int i=0;i<len;i++){
+        bool b=1;
+        for (int j=0;j<wid;j++){
+            if (board[i*25+j]==0){
+                b=0;
+            }
+        }
+        if(b){
+            r++;
+        }
+    }
+    
+    //check row
+    //printf("row\n");
+    for(int i=0;i<r;i++){
+        int arr_wid_check[25]={0};
+        for (int j=0;j<arr_wid[i*26+0];j++){
+            arr_wid_check[j]=0;
+        }
+        int k=0;
+        for (int j=0;j<wid;j++){
+            if(board[i*25+j]>0){
+                arr_wid_check[k]++;
+            }
+            else{
+                if(arr_wid_check[k]==0){
+                    continue;
+                }
+                else{
+                    k++;
+                }
+            }
+        } 
+
+        int j;
+        for (j=0;j<arr_wid[i*26+0];j++){
+            if(arr_wid_check[j]!=arr_wid[i*26+j+1]){
+                return 0;
+            }
+        } 
+        if(arr_wid_check[j]!=0){
+            
+            return 0;
+        }
+    }
+    return 1;
+}
+
 
 
 bool solve(int* board,int wid,int* arr_wid,int len,int* arr_len,int w,int l){
@@ -117,6 +134,11 @@ bool solve(int* board,int wid,int* arr_wid,int len,int* arr_len,int w,int l){
         }
     }
     else{
+        bool b=rowIsValid(board, wid, arr_wid,len,arr_len);
+        if(!b){
+            return 0;
+        }
+        
         board[l*25+w]=1;
         int ww=w;
         int ll=l;
