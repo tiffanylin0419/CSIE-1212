@@ -6,7 +6,7 @@
 bool boardSolved(int* board,int wid,int len){
     for(int i=0;i<len;i++){
         for (int j=0;j<wid;j++){
-            if (board[i*5+j]==0){
+            if (board[i*25+j]==0){
                 return 0;
             }
         }
@@ -16,7 +16,7 @@ bool boardSolved(int* board,int wid,int len){
 void printBoard(int* board,int wid,int len){
     for(int i=0;i<len;i++){
         for (int j=0;j<wid;j++){
-            if(board[i*5+j]==1){
+            if(board[i*25+j]==1){
                 printf("o");
             }
             else{
@@ -33,13 +33,13 @@ bool boardIsValid(int* board,int wid,int* arr_wid,int len,int* arr_len){
     //check row
     //printf("row\n");
     for(int i=0;i<len;i++){
-        int arr_wid_check[5]={0};
+        int arr_wid_check[25]={0};
         for (int j=0;j<arr_wid[i*6+0];j++){
             arr_wid_check[j]=0;
         }
         int k=0;
         for (int j=0;j<wid;j++){
-            if(board[i*5+j]>0){
+            if(board[i*25+j]>0){
                 arr_wid_check[k]++;
             }
             else{
@@ -75,13 +75,13 @@ bool boardIsValid(int* board,int wid,int* arr_wid,int len,int* arr_len){
     //check column
     //printf("column\n");
     for(int i=0;i<wid;i++){
-        int arr_len_check[5]={0};
+        int arr_len_check[25]={0};
         for (int j=0;j<arr_len[i*6+0];j++){
             arr_len_check[j]=0;
         }
         int k=0;
         for (int j=0;j<len;j++){
-            if(board[j*5+i]>0){
+            if(board[j*25+i]>0){
                 arr_len_check[k]+=1;
             }
             else{
@@ -133,7 +133,7 @@ bool solve(int* board,int wid,int* arr_wid,int len,int* arr_len,int w,int l){
         }
     }
     else{
-        board[l*5+w]=1;
+        board[l*25+w]=1;
         int ww=w;
         int ll=l;
         if(ww!=wid-1){
@@ -147,12 +147,12 @@ bool solve(int* board,int wid,int* arr_wid,int len,int* arr_len,int w,int l){
         if(succeed){
             return 1;
         }
-        board[l*5+w]=-1;
+        board[l*25+w]=-1;
         succeed=solve(board,wid,arr_wid,len,arr_len,ww,ll);
         if(succeed){
             return 1;
         }
-        board[l*5+w]=0;
+        board[l*25+w]=0;
         return 0;
     }
 }
@@ -183,7 +183,7 @@ int main(){
     
     
     //create board
-    int board[5][5];
+    int board[25][25];
     for(int i=0;i<length;i++){
         for(int j=0;j<width;j++){
             board[i][j]=0;
