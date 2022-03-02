@@ -161,8 +161,8 @@ int main(){
     //input
     int width,length;
     scanf("%d %d", &length,&width);
-    int arr_len[30];
-    int arr_wid[30];
+    int arr_len[650];
+    int arr_wid[650];
     int l;
     
     for(int i=0;i<length;i++){
