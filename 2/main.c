@@ -28,8 +28,38 @@ void printBoard(int* board,int wid,int len){
 }
 
 bool boardIsValid(int* board,int wid,int* arr_wid,int len,int* arr_len){
-    
+    //check row
+    for(int i=0;i<len;i++){
+        int arr_wid_check[25]={0};
+        for (int j=0;j<arr_wid[i*26+0];j++){
+            arr_wid_check[j]=0;
+        }
+        int k=0;
+        for (int j=0;j<wid;j++){
+            if(board[i*25+j]>0){
+                arr_wid_check[k]++;
+            }
+            else{
+                if(arr_wid_check[k]==0){
+                    continue;
+                }
+                else{
+                    k++;
+                }
+            }
+        } 
 
+        int j;
+        for (j=0;j<arr_wid[i*26+0];j++){
+            if(arr_wid_check[j]!=arr_wid[i*26+j+1]){
+                return 0;
+            }
+        } 
+        if(arr_wid_check[j]!=0){
+            
+            return 0;
+        }
+    }
     //check column
     //printf("column\n");
     for(int i=0;i<wid;i++){
