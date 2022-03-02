@@ -146,6 +146,54 @@ bool rowIsValid(int* board,int wid,int* arr_wid,int len,int* arr_len){
             return 0;
         }
     }
+
+    //solved col
+    int c=0;
+    for(int i=0;i<wid;i++){
+        bool b=1;
+        for (int j=0;j<len;j++){
+            if (board[j*25+i]==0){
+                b=0;
+            }
+        }
+        if(b){
+            c++;
+        }
+    }
+
+    //check column
+    //printf("column\n");
+    for(int i=0;i<c;i++){
+        int arr_len_check[25]={0};
+        for (int j=0;j<arr_len[i*26+0];j++){
+            arr_len_check[j]=0;
+        }
+        int k=0;
+        for (int j=0;j<len;j++){
+            if(board[j*25+i]>0){
+                arr_len_check[k]+=1;
+            }
+            else{
+                if(arr_len_check[k]==0){
+                    continue;
+                }
+                else{
+                    k++;
+                }
+            }
+        }
+
+       int j;
+        for (j=0;j<arr_len[i*26+0];j++){
+            if(arr_len_check[j]!=arr_len[i*26+j+1]){
+                return 0;
+            }
+        }
+        if(arr_len_check[j]!=0){
+            
+            return 0;
+        }
+    }
     return 1;
 }
 
@@ -192,7 +240,6 @@ bool solve(int* board,int wid,int* arr_wid,int len,int* arr_len,int w,int l){
         return 0;
     }
 }
-
 int main(){
     //input
     int width,length;
