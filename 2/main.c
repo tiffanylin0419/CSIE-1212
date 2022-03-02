@@ -34,7 +34,7 @@ bool boardIsValid(int* board,int wid,int* arr_wid,int len,int* arr_len){
     //printf("row\n");
     for(int i=0;i<len;i++){
         int arr_wid_check[25]={0};
-        for (int j=0;j<arr_wid[i*6+0];j++){
+        for (int j=0;j<arr_wid[i*26+0];j++){
             arr_wid_check[j]=0;
         }
         int k=0;
@@ -51,18 +51,10 @@ bool boardIsValid(int* board,int wid,int* arr_wid,int len,int* arr_len){
                 }
             }
         } 
-        /*
-        for (int j=0;j<arr_wid[i*6+0];j++){
-            printf("%d ",arr_wid_check[j]);
-        }
-        for (int j=0;j<arr_wid[i*6+0];j++){
-            printf("%d ",arr_wid[i*6+j+1]);
-        }
-        printf("\n");
-         */
+
         int j;
-        for (j=0;j<arr_wid[i*6+0];j++){
-            if(arr_wid_check[j]!=arr_wid[i*6+j+1]){
+        for (j=0;j<arr_wid[i*26+0];j++){
+            if(arr_wid_check[j]!=arr_wid[i*26+j+1]){
                 return 0;
             }
         } 
@@ -76,7 +68,7 @@ bool boardIsValid(int* board,int wid,int* arr_wid,int len,int* arr_len){
     //printf("column\n");
     for(int i=0;i<wid;i++){
         int arr_len_check[25]={0};
-        for (int j=0;j<arr_len[i*6+0];j++){
+        for (int j=0;j<arr_len[i*26+0];j++){
             arr_len_check[j]=0;
         }
         int k=0;
@@ -93,18 +85,10 @@ bool boardIsValid(int* board,int wid,int* arr_wid,int len,int* arr_len){
                 }
             }
         }
-        /*
-        for (int j=0;j<arr_len[i*6+0];j++){
-            printf("%d ",arr_len_check[j]);
-        }
-        for (int j=0;j<arr_len[i*6+0];j++){
-            printf("%d ",arr_len[i*6+j+1]);
-        }
-        printf("\n");
-        */
+
        int j;
-        for (j=0;j<arr_len[i*6+0];j++){
-            if(arr_len_check[j]!=arr_len[i*6+j+1]){
+        for (j=0;j<arr_len[i*26+0];j++){
+            if(arr_len_check[j]!=arr_len[i*26+j+1]){
                 return 0;
             }
         }
@@ -167,16 +151,16 @@ int main(){
     
     for(int i=0;i<length;i++){
         scanf("%d", &l);
-        arr_wid[i*6+0]=l;
-        for (int j=1;j<arr_wid[i*6+0]+1;j++){
-            scanf("%d", &arr_wid[i*6+j]);
+        arr_wid[i*26+0]=l;
+        for (int j=1;j<arr_wid[i*26+0]+1;j++){
+            scanf("%d", &arr_wid[i*26+j]);
         }
     }
     for(int i=0;i<width;i++){
         scanf("%d", &l);
-        arr_len[i*6+0]=l;
-        for (int j=1;j<arr_len[i*6+0]+1;j++){
-            scanf("%d", &arr_len[i*6+j]);
+        arr_len[i*26+0]=l;
+        for (int j=1;j<arr_len[i*26+0]+1;j++){
+            scanf("%d", &arr_len[i*26+j]);
         }
     }
     
