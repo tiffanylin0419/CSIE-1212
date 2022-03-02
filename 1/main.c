@@ -96,7 +96,7 @@ void minus(int a[], int b[],int* lena, int* lenb){
     return;
 }
 void times(int a[], int b[],int lena, int lenb){
-    int result[256]={0};
+    int result[300]={0};
     int lenresult=lena + lenb;
     for(int i=0;i<lena;i++){
         for (int j=0;j<lenb;j++){
@@ -110,7 +110,7 @@ void times(int a[], int b[],int lena, int lenb){
 }
 
 void GCD_By_Binary(int a[], int b[],int lena, int lenb){
-    int ans[256]={1};
+    int ans[300]={1};
     int lenans=1;
     //make a>b
     if(bigger(b,a,lenb,lena)){
@@ -150,11 +150,13 @@ void GCD_By_Binary(int a[], int b[],int lena, int lenb){
     return; 
 }
 int main(){
-    char sa[256],sb[256];
-    scanf("%s %s", sa,sb);
-    //char sa[256]="128";
-    //char sb[256]="64";
-    int a[256],b[256];
+    char sa[800],sb[300];
+    scanf("%s", sa);
+    //printf("%s\n", sa);
+    scanf("%s", sb);
+    //printf("%s\n", sb);
+
+    int a[300],b[300];
     int lena=strlen(sa);
     int lenb=strlen(sb);
     for (int i=0;i<lena;i++){
@@ -164,5 +166,6 @@ int main(){
         b[i]=sb[lenb-i-1]-48;
     }
     GCD_By_Binary(a,b,lena,lenb);
+    
     return 0;
 }
