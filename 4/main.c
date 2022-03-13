@@ -106,8 +106,8 @@ stack *InToPost(stack *infix){
                 }
                 pop(notation);//get rid of (
             }
-            else if(-5<=infix->arr[i]&&infix->arr[i]<=-3){
-                while(notation->top!=0 && -2>peep(notation)  && peep(notation)>=-5){
+            else if(-5<=infix->arr[i] && infix->arr[i]<=-3){
+                while((notation->top!=0 && -5<=peep(notation)) && peep(notation)<=-3){
                     push(S,pop(notation)); 
                 }
                 push(notation,infix->arr[i]);
@@ -164,6 +164,7 @@ void CSIE(){
             }
         }
     }
+    
     /*
     // print the nodes
     for (int i=0;i<infix->top;i++){
