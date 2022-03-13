@@ -131,6 +131,13 @@ stack *InToPost(stack *infix){
     destroy(notation);
     return S;
 }
+long long int divide(long long int a,long long int b){
+    long long int c=a/b;
+    if(c<0){
+        c-=1;
+    }
+    return c;
+}
 
 void CSIE(){
     long long int c=0;
@@ -154,7 +161,7 @@ void CSIE(){
                 push(ans,a*b);
             }
             else if(postfix->arr[i]==-4){
-                push(ans,a/b);
+                push(ans,divide(a,b));
             }
             else if(postfix->arr[i]==-5){
                 push(ans,a%b);
@@ -199,6 +206,5 @@ void CSIE(){
 
 int main(){
     CSIE();
-    //printf("Print: %d",CSIE());
     return 0;
 }
