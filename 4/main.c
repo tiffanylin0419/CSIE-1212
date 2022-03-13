@@ -45,7 +45,7 @@ stack *input(){
     stack *S=alloc();
     //put into stack
     for(int i=0;i<strlen(sa);i++){
-        int num=0;
+        long long int num=0;
         
         if(sa[i]=='('){
             num=-1;
