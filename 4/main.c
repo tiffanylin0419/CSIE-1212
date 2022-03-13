@@ -143,6 +143,9 @@ long long int divide(long long int a,long long int b){
     }
     long long int c=a/b;
     c=notation*c;
+    if(notation<0){
+        c-=1;
+    }
     return c;
 }
 
