@@ -121,10 +121,10 @@ stack *InToPost(stack *infix){
         }
     }
     
-
-    for (int i=0;i<notation->top;i++){    
-        push(S,pop(notation)); 
+    while(notation->top!=0 && -2>peep(notation)){
+        push(S,pop(notation));
     }
+
     destroy(notation);
     return S;
 }
