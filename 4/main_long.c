@@ -7,19 +7,19 @@
 
 typedef struct node{ 
     int top;
-    long long int arr[1000000]; 
+    int arr[1000000]; 
 } stack;
 
-void push(stack *S,long long int data){
+void push(stack *S,int data){
     S->arr[S->top]=data;
     S->top+=1;
 }
 
-long long int peep(stack *S){
+int peep(stack *S){
     return S->arr[S->top-1];
 }
 
-long long int pop(stack *S){
+int pop(stack *S){
     S->top-=1;
     return S->arr[S->top];
 }
@@ -46,7 +46,6 @@ stack *input(){
     //put into stack
     for(int i=0;i<strlen(sa);i++){
         int num=0;
-        
         if(sa[i]=='('){
             num=-1;
         }
@@ -68,11 +67,9 @@ stack *input(){
         else if(sa[i]=='-'){
             num=-7;
         }
-        
         else if(sa[i]=='='){
             num=-8;
         }
-        
         else{
             while(isdigit(sa[i]) && i<strlen(sa)){
                 num=10*num+sa[i]-48;
@@ -133,8 +130,8 @@ stack *InToPost(stack *infix){
 }
 
 void CSIE(){
-    long long int c=0;
-    long long int a,b;
+    int c=0;
+    int a,b;
     stack *infix=input();
     stack *postfix=InToPost(infix);
 
@@ -145,7 +142,7 @@ void CSIE(){
             push(ans,postfix->arr[i]);
         }
         else if(postfix->arr[i]==-8){
-            printf("Print: %lld\n",peep(ans));
+            printf("Print: %d\n",peep(ans));
         }
         else{
             b=pop(ans);
