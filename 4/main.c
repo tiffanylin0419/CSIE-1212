@@ -132,10 +132,17 @@ stack *InToPost(stack *infix){
     return S;
 }
 long long int divide(long long int a,long long int b){
-    long long int c=a/b;
-    if(c<0){
-        c-=1;
+    int notation=1;
+    if(a<0){
+        notation=-notation;
+        a=-a;
     }
+    if(b<0){
+        notation=-notation;
+        b=-b;
+    }
+    long long int c=a/b;
+    c=notation*c;
     return c;
 }
 
