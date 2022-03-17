@@ -109,8 +109,9 @@ void print(stack *S){
             tmp=tmp->right;
         }
         //printf("%p %d %d %p\n",tmp->left,tmp->data,tmp->group,tmp->right);
-        printf("%d ",tmp->data);
+        printf("%d",tmp->data);
     }
+    printf("\n");
     return;
 }
 
@@ -137,6 +138,10 @@ void cow(){
         else if(str[0]=='g'){//go
             scanf("%d",&ii);
             go(S[ii]);
+        }
+        else if(str[0]=='c'){//go
+            scanf("%d",&ii);
+            //go(S[ii]);
         }
     }
     for(int i=0;i<M;i++){
