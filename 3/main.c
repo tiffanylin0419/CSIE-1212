@@ -14,6 +14,7 @@ typedef struct node{
 
 typedef struct stack{ 
     struct node *top; 
+    bool open;
 } stack;
 
 node *alloc(){
@@ -32,6 +33,7 @@ stack *alloc_stack(){
     stack *tmp = (stack *)malloc(sizeof(stack)); 
     node *tmpp=alloc();
     tmp->top = tmpp;
+    tmp->open=true;
     return tmp;
 }
 int peep(stack *S){
@@ -116,30 +118,32 @@ void print(stack *S){
 void cow(){
     int M,N,K;
     scanf("%d %d %d",&M,&N,&K);
-    stack *S=alloc_stack();
+    stack *S[1000000];
+    for(int i=0;i<M;i++){
+        S[i]=alloc_stack();
+    }
     for(int i=0;i<N;i++){  
         int ii,jj,kk;
         char str[10];
         scanf("%s",str);
         if(str[0]=='e'){//enter
             scanf("%d %d %d",&ii,&jj,&kk);
-            push(S,jj,ii);
+            push(S[kk],jj,ii);
         }
         else if(str[0]=='l'){//leave
             scanf("%d",&ii);
-            pop(S);
+            pop(S[ii]);
         }
         else if(str[0]=='g'){//go
             scanf("%d",&ii);
-            go(S);
+            go(S[ii]);
         }
     }
+    for(int i=0;i<M;i++){
+        print(S[i]);
+    }
     
- 
-    //pop(S);
-
-    print(S);
-    destroy_stack(S);
+    destroy_stack(S[0]);
     return; 
 }
 
