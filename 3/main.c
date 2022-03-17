@@ -147,9 +147,11 @@ void cow(){
     for(int i=0;i<M;i++){
         print(S[i]);
     }
+    /*
     for(int i=0;i<M;i++){
         destroy_stack(S[i]);
     }
+    */
     return; 
 }
 
