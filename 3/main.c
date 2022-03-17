@@ -139,13 +139,15 @@ void cow(){
             scanf("%d",&ii);
             go(S[ii]);
         }
-        else if(str[0]=='c'){//go
+        else if(str[0]=='c'){//close
             scanf("%d",&ii);
             //go(S[ii]);
         }
     }
     for(int i=0;i<M;i++){
         print(S[i]);
+    }
+    for(int i=0;i<M;i++){
         destroy_stack(S[i]);
     }
     return; 
