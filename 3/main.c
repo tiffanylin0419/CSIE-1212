@@ -85,14 +85,14 @@ void go(stack *S){
     S->top->right=S->top->right->right;
     S->top->right->left=S->top;
     destroy(tmp);
+    
     return;
 }
 
 void destroy_stack(stack *S){
-    while(S->top!=S->top->right){
+    while(S->top->right!=NULL){
         pop(S);
     }
-    pop(S);
     // clean sensitive data.
     memset(S, 0, sizeof(*S));
     free(S); 
@@ -146,9 +146,8 @@ void cow(){
     }
     for(int i=0;i<M;i++){
         print(S[i]);
+        destroy_stack(S[i]);
     }
-    
-    destroy_stack(S[0]);
     return; 
 }
 
