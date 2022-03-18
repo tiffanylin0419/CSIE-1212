@@ -1,1 +1,2 @@
-->top->right
+    print(S[i]);
+        }
