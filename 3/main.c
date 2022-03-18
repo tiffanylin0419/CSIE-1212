@@ -148,9 +148,7 @@ void cow(){
             scanf("%d",&ii);
             //go(S[ii]);
         }
-        for(int i=0;i<M;i++){
-            print(S[i]);
-        }
+
     }
     for(int i=0;i<M;i++){
         print(S[i]);
