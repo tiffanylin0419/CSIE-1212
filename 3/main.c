@@ -35,9 +35,6 @@ stack *alloc_stack(){
     tmp->open=true;
     return tmp;
 }
-int peep(stack *S){
-    return S->top->data;
-}
 
 node *find(stack *S,int group){
     node *tmp=S->top->right;
@@ -72,11 +69,13 @@ void push(stack *S,int data,int group){
 }
 void pop(stack *S){
     node*tmp=S->top;
-    S->top->left->right=S->top->right;
-    S->top->right->left=S->top->left;
-    S->top=S->top->left;
     if(S->top->right==S->top){
         S->top=NULL;
+    }
+    else{
+        S->top->left->right=S->top->right;
+        S->top->right->left=S->top->left;
+        S->top=S->top->left;
     }
     destroy(tmp);
     return;
@@ -149,7 +148,9 @@ void cow(){
             scanf("%d",&ii);
             //go(S[ii]);
         }
-
+        for(int i=0;i<M;i++){
+            print(S[i]);
+        }
     }
     for(int i=0;i<M;i++){
         print(S[i]);
