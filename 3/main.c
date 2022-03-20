@@ -7,7 +7,8 @@
 
 typedef struct node{ 
     int data;
-    struct node *next; 
+    struct node *left,*right; 
+    //struct node *next; 
 } node;
 
 typedef struct group{ 
@@ -19,12 +20,13 @@ typedef struct group{
 typedef struct line{ 
     struct group *head; 
     struct group *tail; 
-    bool open;
+    struct group *left, *right; //?
 } line;
 
 node *alloc(){
     node *tmp = (node *)malloc(sizeof(node)); 
-    tmp->next=NULL;
+    tmp->left=NULL;
+    tmp->right=NULL;
     return tmp;
 }
 
@@ -55,23 +57,24 @@ line *alloc_line(){
     line *tmp = (line *)malloc(sizeof(line)); 
     tmp->head = NULL;
     tmp->tail = NULL;
-    tmp->open=true;
+    tmp->left=NULL;
+    tmp->right=NULL;
     return tmp;
 }
 node *secondLastInLine(group *G){
     node *tmp=G->head;
     node *tmpp;
-    while(tmp->next!=NULL){
+    while(tmp->right!=NULL){
         tmpp=tmp;
-        tmp=tmp->next;
+        tmp=tmp->right;
     }
     return tmpp;
 }
 
 node *lastInLine(group *G){
     node *tmp=G->head;
-    while(tmp->next!=NULL){
-        tmp=tmp->next;
+    while(tmp->right!=NULL){
+        tmp=tmp->right;
     }
     return tmp;
 }
@@ -102,7 +105,8 @@ void push(line *S,int data,int group_id){
         group *position=find(S,group_id);
         if(position->group_id==group_id){
             node *front=lastInLine(position);
-            front->next=tmp;
+            front->right=tmp;
+            tmp->left=front;
         }
         else{
             group *tmpp=alloc_group();
@@ -114,10 +118,11 @@ void push(line *S,int data,int group_id){
         }
     }
 }
+
 void pop(line *S){
     group *tmp=S->tail;
 
-    if(tmp->head->next==NULL){
+    if(tmp->head->right==NULL){
         //只有一顆
         destroy(tmp->head);
         //delete group
@@ -134,12 +139,59 @@ void pop(line *S){
     }
     else{
         node *tmpp=secondLastInLine(tmp);
-        destroy(tmpp->next);
-        tmpp->next=NULL;
+        destroy(tmpp->right);
+        tmpp->right=NULL;
     }
     return;
 }
 void go(line *S){
+    group *tmp=S->head;
+    if(tmp->head->right==NULL){
+        //只有一顆
+        destroy(tmp->head);
+        //delete group
+        if(S->head==S->tail){
+            destroy_group(S->head);
+            S->tail=NULL;
+            S->head=NULL;
+        }
+        else{
+            S->head=S->head->right;
+            destroy_group(S->head->left);
+            S->head->left=NULL;
+        } 
+    }
+    else{
+        node *tmpp=tmp->head;
+        tmp->head=tmp->head->right;
+        tmp->left=NULL;
+        destroy(tmpp);
+        tmpp->right=NULL;
+    }
+    return;
+}
+
+/*
+void move(line *S1,line *S2){
+    //close S1 put into S2
+    group *tmp=S1->tail;
+    while(tmp!=S1->head){
+        group *position=find(S2,tmp->group_id);
+        node *tmpp=lastInLine(position);
+        tmpp->next=tmp->head;
+        destroy_group(tmp);
+        S1->tail=S1->tail->left;
+    }
+    group *position=find(S2,tmp->group_id);
+    node *tmpp=lastInLine(position);
+    tmpp->next=tmp->head;
+    destroy_group(tmp);
+    //destroy_line(S1) afterwards when S is malloced
+    return;
+}
+
+
+void close(line *S){
     group *tmp=S->head;
     if(tmp->head->next==NULL){
         //只有一顆
@@ -164,7 +216,8 @@ void go(line *S){
     }
     return;
 }
-/*
+
+
 void destroy_line(line *S){
     while(S->top->right!=NULL){
         pop(S);
@@ -181,17 +234,17 @@ void print(line *S){
     if(tmp!=NULL){
         while (tmp->right!=NULL) {
             node *tmpp =tmp->head;
-            while(tmpp->next!=NULL){
+            while(tmpp->right!=NULL){
                 printf("%d ",tmpp->data);
-                tmpp=tmpp->next;
+                tmpp=tmpp->right;
             }
             tmp=tmp->right;
             printf("%d ",tmpp->data);
         }
         node *tmpp =tmp->head;
-            while(tmpp->next!=NULL){
+            while(tmpp->right!=NULL){
                 printf("%d ",tmpp->data);
-                tmpp=tmpp->next;
+                tmpp=tmpp->right;
             }
             tmp=tmp->right;
             printf("%d ",tmpp->data);
@@ -228,7 +281,7 @@ void cow(){
         }
         else if(str[0]=='c'){//close
             scanf("%d",&ii);
-            //go(S[ii]);
+            close(S[ii]);
         }
         /*
         for(int i=0;i<M;i++){
