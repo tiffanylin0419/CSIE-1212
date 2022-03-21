@@ -227,6 +227,7 @@ void move(line *S1,line *S2){
             tmp->head->left=tmpp;
             tmp=tmp->left;
             destroy_group(tmp->right);
+            tmp->right=NULL;
         }
         else{
             if(tmp->group_id==position->group_id){
@@ -235,6 +236,7 @@ void move(line *S1,line *S2){
                 tmp->head->left=tmpp;
                 tmp=tmp->left;
                 destroy_group(tmp->right);
+                tmp->right=NULL;
             }
             
             else{
@@ -254,7 +256,7 @@ void move(line *S1,line *S2){
         node *tmpp=lastInLine(position);
         tmpp->right=tmp->head;
         tmp->head->left=tmpp;
-        destroy_group(tmp->right);
+        destroy_group(tmp);
     }
     else{
         if(tmp->group_id==position->group_id){
@@ -286,7 +288,7 @@ void destroy_line(line *S){
     while(S->top->right!=NULL){
         pop(S);
     }
-    // clean sensitive data.
+    // clean sensitive data
     memset(S, 0, sizeof(*S));
     free(S); 
     return;
