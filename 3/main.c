@@ -13,13 +13,12 @@ typedef struct node{
 
 typedef struct group{ 
     int group_id;
-    struct node *head; 
+    struct node *head,*tail; 
     struct group *left, *right; 
 } group;
 
 typedef struct line{ 
-    struct group *head; 
-    struct group *tail; 
+    struct group *head,*tail; 
     //struct group *left, *right; //?
     bool open;
 } line;
@@ -51,6 +50,7 @@ group *alloc_group(){
     tmp->left = NULL;
     tmp->right = NULL;
     tmp->head=NULL;
+    tmp->tail=NULL;
     return tmp;
 }
 
@@ -73,13 +73,6 @@ node *secondLastInLine(group *G){
     return tmpp;
 }
 
-node *lastInLine(group *G){
-    node *tmp=G->head;
-    while(tmp->right!=NULL){
-        tmp=tmp->right;
-    }
-    return tmp;
-}
 
 group *find(line *S,int group_id){
     group *tmp=S->head;
@@ -99,6 +92,7 @@ void push(line *S,int data,int group_id){
     if(S->head==NULL){
         group *tmpp=alloc_group();
         tmpp->head=tmp;
+        tmpp->tail=tmp;
         tmpp->group_id=group_id;
         S->head=tmpp;
         S->tail=tmpp;
@@ -106,15 +100,17 @@ void push(line *S,int data,int group_id){
     else{
         group *position=find(S,group_id);
         if(position->group_id==group_id){
-            node *front=lastInLine(position);
+            node *front=position->tail;
             front->right=tmp;
             tmp->left=front;
+            position->tail=tmp;
         }
         else{
             group *tmpp=alloc_group();
             S->tail->right=tmpp;
             tmpp->left=S->tail;
             tmpp->head=tmp;
+            tmpp->tail=tmp;
             tmpp->group_id=group_id;
             S->tail=tmpp;
         }
@@ -141,6 +137,7 @@ void pop(line *S){
     }
     else{
         node *tmpp=secondLastInLine(tmp);
+        tmp->tail=tmpp;
         destroy(tmpp->right);
         tmpp->right=NULL;
     }
@@ -174,8 +171,10 @@ void go(line *S){
 }
 
 void reverse(group *G){
-    G->head=lastInLine(G);
     node *tmp=G->head;
+    G->head=G->tail;
+    G->tail=tmp;
+    tmp=G->head;
     while(tmp->left!=NULL){
         node *tmpp=tmp->right;
         tmp->right=tmp->left;
@@ -216,13 +215,12 @@ void move(line *S1,line *S2){
         S1->tail=NULL;
         return;
     }
-    
-    
     while(tmp!=S1->head){
         reverse(tmp);
         group *position=find(S2,tmp->group_id);
         if(position !=S2->tail){
-            node *tmpp=lastInLine(position);
+            node *tmpp=position->tail;
+            position->tail=tmp->tail;
             tmpp->right=tmp->head;
             tmp->head->left=tmpp;
             tmp=tmp->left;
@@ -231,7 +229,8 @@ void move(line *S1,line *S2){
         }
         else{
             if(tmp->group_id==position->group_id){
-                node *tmpp=lastInLine(position);
+                node *tmpp=position->tail;
+                position->tail=tmp->tail;
                 tmpp->right=tmp->head;
                 tmp->head->left=tmpp;
                 tmp=tmp->left;
@@ -241,7 +240,6 @@ void move(line *S1,line *S2){
             
             else{
                 //接在Ｓ2後面
-                
                 position->right=tmp;
                 tmp=tmp->left;
                 position->right->left=position;
@@ -253,14 +251,16 @@ void move(line *S1,line *S2){
     reverse(tmp);
     group *position=find(S2,tmp->group_id);
     if(position !=S2->tail){
-        node *tmpp=lastInLine(position);
+        node *tmpp=position->tail;
+        position->tail=tmp->tail;
         tmpp->right=tmp->head;
         tmp->head->left=tmpp;
         destroy_group(tmp);
     }
     else{
         if(tmp->group_id==position->group_id){
-            node *tmpp=lastInLine(position);
+            node *tmpp=position->tail;
+            position->tail=tmp->tail;
             tmpp->right=tmp->head;
             tmp->head->left=tmpp;
             destroy_group(tmp);
