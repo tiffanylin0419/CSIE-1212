@@ -20,7 +20,8 @@ typedef struct group{
 typedef struct line{ 
     struct group *head; 
     struct group *tail; 
-    struct group *left, *right; //?
+    //struct group *left, *right; //?
+    bool open;
 } line;
 
 node *alloc(){
@@ -57,8 +58,9 @@ line *alloc_line(){
     line *tmp = (line *)malloc(sizeof(line)); 
     tmp->head = NULL;
     tmp->tail = NULL;
-    tmp->left=NULL;
-    tmp->right=NULL;
+    //tmp->left=NULL;
+    //tmp->right=NULL;
+    tmp->open=true;
     return tmp;
 }
 node *secondLastInLine(group *G){
@@ -164,60 +166,122 @@ void go(line *S){
     else{
         node *tmpp=tmp->head;
         tmp->head=tmp->head->right;
-        tmp->left=NULL;
+        tmp->head->left=NULL;
         destroy(tmpp);
-        tmpp->right=NULL;
+        //tmpp->right=NULL;
     }
     return;
 }
 
-/*
+void reverse(group *G){
+    G->head=lastInLine(G);
+    node *tmp=G->head;
+    while(tmp->left!=NULL){
+        node *tmpp=tmp->right;
+        tmp->right=tmp->left;
+        tmp->left=tmpp;
+        tmp=tmp->right;
+    }
+    node *tmpp=tmp->right;
+    tmp->right=tmp->left;
+    tmp->left=tmpp;
+    return;
+}
+
 void move(line *S1,line *S2){
     //close S1 put into S2
+    S1->open=false;
     group *tmp=S1->tail;
-    while(tmp!=S1->head){
-        group *position=find(S2,tmp->group_id);
-        node *tmpp=lastInLine(position);
-        tmpp->next=tmp->head;
-        destroy_group(tmp);
-        S1->tail=S1->tail->left;
+    
+    //bathroom is empty
+    
+    if(S2->head==NULL){
+        reverse(tmp);
+        S2->head=tmp;
+        S2->tail=tmp;
+        if(tmp->left!=NULL){
+            tmp=tmp->left;
+            while(tmp!=S1->head){
+                reverse(tmp);
+                S2->tail->right=tmp;
+                tmp->left=S2->tail;
+                S2->tail=tmp;
+            }
+            reverse(tmp);
+            S2->tail->right=tmp;
+            tmp->left=S2->tail;
+            S2->tail=tmp;
+        }
+        S1->head=NULL;
+        S1->tail=NULL;
+        return;
     }
-    group *position=find(S2,tmp->group_id);
-    node *tmpp=lastInLine(position);
-    tmpp->next=tmp->head;
-    destroy_group(tmp);
-    //destroy_line(S1) afterwards when S is malloced
-    return;
-}
-
-
-void close(line *S){
-    group *tmp=S->head;
-    if(tmp->head->next==NULL){
-        //只有一顆
-        destroy(tmp->head);
-        //delete group
-        if(S->head==S->tail){
-            destroy_group(S->head);
-            S->tail=NULL;
-            S->head=NULL;
+    
+    
+    while(tmp!=S1->head){
+        reverse(tmp);
+        group *position=find(S2,tmp->group_id);
+        if(position !=S2->tail){
+            node *tmpp=lastInLine(position);
+            tmpp->right=tmp->head;
+            tmp->head->left=tmpp;
+            tmp=tmp->left;
+            destroy_group(tmp->right);
         }
         else{
-            S->head=S->head->right;
-            destroy_group(S->head->left);
-            S->head->left=NULL;
-        } 
+            if(tmp->group_id==position->group_id){
+                node *tmpp=lastInLine(position);
+                tmpp->right=tmp->head;
+                tmp->head->left=tmpp;
+                tmp=tmp->left;
+                destroy_group(tmp->right);
+            }
+            
+            else{
+                //接在Ｓ2後面
+                
+                position->right=tmp;
+                tmp=tmp->left;
+                position->right->left=position;
+                position->right->right=NULL;
+                S2->tail=position->right;
+            }
+        }
+    }
+    reverse(tmp);
+    group *position=find(S2,tmp->group_id);
+    if(position !=S2->tail){
+        node *tmpp=lastInLine(position);
+        tmpp->right=tmp->head;
+        tmp->head->left=tmpp;
+        destroy_group(tmp->right);
     }
     else{
-        node *tmpp=tmp->head;
-        tmp->head=tmp->head->next;
-        destroy(tmpp);
-        tmpp->next=NULL;
+        if(tmp->group_id==position->group_id){
+            node *tmpp=lastInLine(position);
+            tmpp->right=tmp->head;
+            tmp->head->left=tmpp;
+            destroy_group(tmp);
+            
+        }   
+        else{
+            //接在Ｓ2後面  
+            position->right=tmp;
+            position->right->left=position;
+            position->right->right=NULL;
+            S2->tail=position->right;
+        }
     }
+    S1->head=NULL;
+    S1->tail=NULL;
+    //destroy_line(S1) 
+    //afterwards when S is malloced
+    
     return;
 }
 
 
+/*
 void destroy_line(line *S){
     while(S->top->right!=NULL){
         pop(S);
@@ -230,7 +294,6 @@ void destroy_line(line *S){
 */
 void print(line *S){
     group* tmp=S->head;
-
     if(tmp!=NULL){
         while (tmp->right!=NULL) {
             node *tmpp =tmp->head;
@@ -264,12 +327,26 @@ void cow(){
     }
 
     for(int i=0;i<N;i++){  
+        //close 的不能enter
         int ii,jj,kk;
         char str[10];
         scanf("%s",str);
         if(str[0]=='e'){//enter
             scanf("%d %d %d",&ii,&jj,&kk);
-            push(S[kk],jj,ii);
+            bool notdone=true;
+            for(int j=kk;j>=0 && notdone;j--){
+                if(S[j]->open ){
+                    push(S[j],jj,ii);
+                    notdone=false;
+                }
+            }
+            for(int j=M-1;j>kk && notdone;j--){
+                if(S[j]->open ){
+                    push(S[j],jj,ii);
+                    notdone=false;
+                }
+            }
+            
         }
         else if(str[0]=='l'){//leave
             scanf("%d",&ii);
@@ -281,7 +358,27 @@ void cow(){
         }
         else if(str[0]=='c'){//close
             scanf("%d",&ii);
-            close(S[ii]);
+            if(S[ii]->head==NULL){
+                S[ii]->open=false;
+            }
+            else{
+                bool notdone=true;
+                for(int j=ii-1;j>=0 && notdone;j--){
+                    if(S[j]->open ){
+                        //printf("move to%d\n",j);
+                        move(S[ii],S[j]);
+                        notdone=false;
+                    }
+                }
+    
+                for(int j=M-1;j>ii && notdone;j--){
+                    if(S[j]->open && notdone){
+                        //printf("moves to%d\n",j);
+                        move(S[ii],S[j]);
+                        notdone=false;
+                    }
+                }
+            }
         }
         /*
         for(int i=0;i<M;i++){
