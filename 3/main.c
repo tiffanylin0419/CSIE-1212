@@ -64,13 +64,7 @@ line *alloc_line(){
     return tmp;
 }
 node *secondLastInLine(group *G){
-    node *tmp=G->head;
-    node *tmpp;
-    while(tmp->right!=NULL){
-        tmpp=tmp;
-        tmp=tmp->right;
-    }
-    return tmpp;
+    return G->tail->left;
 }
 
 
@@ -191,26 +185,34 @@ void move(line *S1,line *S2){
     //close S1 put into S2
     S1->open=false;
     group *tmp=S1->tail;
-    
     //bathroom is empty
-    
     if(S2->head==NULL){
+        //group 0011 close 0有問題
         reverse(tmp);
         S2->head=tmp;
         S2->tail=tmp;
+
         if(tmp->left!=NULL){
             tmp=tmp->left;
-            while(tmp!=S1->head){
+            while(tmp->left!=NULL){
                 reverse(tmp);
-                S2->tail->right=tmp;
-                tmp->left=S2->tail;
-                S2->tail=tmp;
+                group *position=S2->tail;
+                position->right=tmp;
+                tmp=tmp->left;
+                position->right->left=position;
+                position->right->right=NULL;
+                S2->tail=position->right;
             }
             reverse(tmp);
-            S2->tail->right=tmp;
-            tmp->left=S2->tail;
-            S2->tail=tmp;
+            group *position=S2->tail;
+            position->right=tmp;
+            position->right->left=position;
+            position->right->right=NULL;
+            S2->tail=position->right;
         }
+
+        S2->head->left=NULL;
+        S2->tail->right=NULL;
         S1->head=NULL;
         S1->tail=NULL;
         return;
@@ -248,6 +250,7 @@ void move(line *S1,line *S2){
             }
         }
     }
+
     reverse(tmp);
     group *position=find(S2,tmp->group_id);
     if(position !=S2->tail){
@@ -276,6 +279,9 @@ void move(line *S1,line *S2){
     }
     S1->head=NULL;
     S1->tail=NULL;
+
+    S2->head->left=NULL;
+    S2->tail->right=NULL;
     //destroy_line(S1) 
     //afterwards when S is malloced
     
@@ -295,24 +301,40 @@ void destroy_line(line *S){
 }
 */
 void print(line *S){
+    
     group* tmp=S->head;
+     
     if(tmp!=NULL){
+        //printf("headhead %d\n",tmp->head->data); 
+        //printf("headtail %d\n",tmp->tail->data); 
+        //
         while (tmp->right!=NULL) {
+            //printf("head:%d tail: %d\n",tmp->head->data,tmp->tail->data);
+            //printf("%d\n",tmp->group_id);
             node *tmpp =tmp->head;
             while(tmpp->right!=NULL){
+                //printf("%p %d %p\n",tmpp->left,tmpp->data,tmpp->right);
                 printf("%d ",tmpp->data);
                 tmpp=tmpp->right;
             }
             tmp=tmp->right;
             printf("%d ",tmpp->data);
+            //printf("%p %d %p\n",tmpp->left,tmpp->data,tmpp->right);
         }
+        //printf("head:%d tail: %d\n",tmp->head->data,tmp->tail->data);
+        //printf("%d\n",tmp->group_id);
         node *tmpp =tmp->head;
-            while(tmpp->right!=NULL){
-                printf("%d ",tmpp->data);
-                tmpp=tmpp->right;
-            }
-            tmp=tmp->right;
+        while(tmpp->right!=NULL){
+            //printf("%p %d %p\n",tmpp->left,tmpp->data,tmpp->right);
             printf("%d ",tmpp->data);
+            tmpp=tmpp->right;
+        }
+        tmp=tmp->right;
+        printf("%d ",tmpp->data);
+        //printf("%p %d %p\n",tmpp->left,tmpp->data,tmpp->right);
+        //printf("tailhead:%d\n",S->tail->head->data);
+        //printf("tailtail:%d\n",S->tail->tail->data);
+        //
     }
     printf("\n");
     return;
@@ -320,6 +342,105 @@ void print(line *S){
 
 
 void cow(){
+    /*
+    int M=4,N=10,K=4;
+    line *S[100000];
+    for(int i=0;i<M;i++){
+        S[i]=alloc_line();
+    }
+    //enter 0 1 0
+    int ii=0,jj=1,kk=0;
+    bool notdone=true;
+    for(int j=kk;j>=0 && notdone;j--){
+        if(S[j]->open ){
+            push(S[j],jj,ii);
+            notdone=false;
+        }
+    }
+    
+    for(int j=M-1;j>kk && notdone;j--){
+        if(S[j]->open ){
+            push(S[j],jj,ii);
+            notdone=false;
+        }
+    }
+    for(int i=0;i<M;i++){
+        print(S[i]);
+    }
+    //enter 1 2 0
+    ii=1,jj=2,kk=0;
+    notdone=true;
+    for(int j=kk;j>=0 && notdone;j--){
+        if(S[j]->open ){
+            push(S[j],jj,ii);
+            notdone=false;
+        }
+    }
+    
+    for(int j=M-1;j>kk && notdone;j--){
+        if(S[j]->open ){
+            push(S[j],jj,ii);
+            notdone=false;
+        }
+    }
+    for(int i=0;i<M;i++){
+        print(S[i]);
+    }
+    //close 0
+    ii=0;
+    if(S[ii]->head==NULL){
+        S[ii]->open=false;
+    }
+    else{
+        bool notdone=true;
+        for(int j=ii-1;j>=0 && notdone;j--){
+            if(S[j]->open ){
+                printf("move to%d\n",j);
+                move(S[ii],S[j]);
+                notdone=false;
+            }
+        }
+    
+        for(int j=M-1;j>ii && notdone;j--){
+            if(S[j]->open && notdone){
+                printf("moves to%d\n",j);
+                move(S[ii],S[j]);
+                notdone=false;
+            }
+        }
+    }
+    for(int i=0;i<M;i++){
+        print(S[i]);
+    }
+    //close 3
+    ii=3;
+    if(S[ii]->head==NULL){
+        S[ii]->open=false;
+    }
+    else{
+        bool notdone=true;
+        for(int j=ii-1;j>=0 && notdone;j--){
+            if(S[j]->open ){
+                printf("move to%d\n",j);
+                move(S[ii],S[j]);
+                notdone=false;
+            }
+        }
+    
+        for(int j=M-1;j>ii && notdone;j--){
+            if(S[j]->open && notdone){
+                printf("moves to%d\n",j);
+                move(S[ii],S[j]);
+                notdone=false;
+            }
+        }
+    }
+    ///
+    for(int i=0;i<M;i++){
+        print(S[i]);
+    }
+    
+    */
     int M=0,N=0,K=0;
     scanf("%d %d %d",&M,&N,&K);
 
@@ -381,6 +502,7 @@ void cow(){
                     }
                 }
             }
+            
         }
         /*
         for(int i=0;i<M;i++){
@@ -389,14 +511,16 @@ void cow(){
         */
 
     }
+    
     for(int i=0;i<M;i++){
         print(S[i]);
     }
-    /*
-    for(int i=0;i<M;i++){
-        destroy_line(S[i]);
-    }
-    */
+    
+    //for(int i=0;i<M;i++){
+    //    destroy_line(S[i]);
+    //}
+    
+   
     return; 
 }
 
