@@ -444,7 +444,8 @@ void cow(){
     int M=0,N=0,K=0;
     scanf("%d %d %d",&M,&N,&K);
 
-    line *S[100000];
+    line **S = (line **)malloc(sizeof(line *)*M); 
+    //line *S[100000];
     for(int i=0;i<M;i++){
         S[i]=alloc_line();
     }
