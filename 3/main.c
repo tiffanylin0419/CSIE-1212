@@ -8,18 +8,17 @@
 typedef struct node{ 
     int data;
     struct node *left,*right; 
-    //struct node *next; 
 } node;
 
 typedef struct group{ 
     int group_id;
     struct node *head,*tail; 
     struct group *left, *right; 
+    bool direction;//initaially true
 } group;
 
 typedef struct line{ 
     struct group *head,*tail; 
-    //struct group *left, *right; //?
     bool open;
 } line;
 
@@ -51,6 +50,7 @@ group *alloc_group(){
     tmp->right = NULL;
     tmp->head=NULL;
     tmp->tail=NULL;
+    tmp->direction=true;
     return tmp;
 }
 
@@ -63,10 +63,6 @@ line *alloc_line(){
     tmp->open=true;
     return tmp;
 }
-node *secondLastInLine(group *G){
-    return G->tail->left;
-}
-
 
 group *find(line *S,int group_id){
     group *tmp=S->head;
@@ -78,7 +74,7 @@ group *find(line *S,int group_id){
     }
     return S->tail;
 }
-
+//start?
 void push(line *S,int data,int group_id){
     node *tmp=alloc();
     tmp->data=data;
@@ -130,7 +126,7 @@ void pop(line *S){
         } 
     }
     else{
-        node *tmpp=secondLastInLine(tmp);
+        node *tmpp=tmp->tail->left;
         tmp->tail=tmpp;
         destroy(tmpp->right);
         tmpp->right=NULL;
@@ -288,32 +284,14 @@ void move(line *S1,line *S2){
     return;
 }
 
-
-/*
-void destroy_line(line *S){
-    while(S->top->right!=NULL){
-        pop(S);
-    }
-    // clean sensitive data
-    memset(S, 0, sizeof(*S));
-    free(S); 
-    return;
-}
-*/
 void print(line *S){
     
     group* tmp=S->head;
      
     if(tmp!=NULL){
-        //printf("headhead %d\n",tmp->head->data); 
-        //printf("headtail %d\n",tmp->tail->data); 
-        //
         while (tmp->right!=NULL) {
-            //printf("head:%d tail: %d\n",tmp->head->data,tmp->tail->data);
-            //printf("%d\n",tmp->group_id);
             node *tmpp =tmp->head;
             while(tmpp->right!=NULL){
-                //printf("%p %d %p\n",tmpp->left,tmpp->data,tmpp->right);
                 printf("%d ",tmpp->data);
                 tmpp=tmpp->right;
             }
@@ -331,127 +309,20 @@ void print(line *S){
         }
         tmp=tmp->right;
         printf("%d ",tmpp->data);
-        //printf("%p %d %p\n",tmpp->left,tmpp->data,tmpp->right);
-        //printf("tailhead:%d\n",S->tail->head->data);
-        //printf("tailtail:%d\n",S->tail->tail->data);
-        //
+        
     }
     printf("\n");
     return;
 }
 
-
 void cow(){
-    /*
-    int M=4,N=10,K=4;
-    line *S[100000];
-    for(int i=0;i<M;i++){
-        S[i]=alloc_line();
-    }
-    //enter 0 1 0
-    int ii=0,jj=1,kk=0;
-    bool notdone=true;
-    for(int j=kk;j>=0 && notdone;j--){
-        if(S[j]->open ){
-            push(S[j],jj,ii);
-            notdone=false;
-        }
-    }
-    
-    for(int j=M-1;j>kk && notdone;j--){
-        if(S[j]->open ){
-            push(S[j],jj,ii);
-            notdone=false;
-        }
-    }
-    for(int i=0;i<M;i++){
-        print(S[i]);
-    }
-    //enter 1 2 0
-    ii=1,jj=2,kk=0;
-    notdone=true;
-    for(int j=kk;j>=0 && notdone;j--){
-        if(S[j]->open ){
-            push(S[j],jj,ii);
-            notdone=false;
-        }
-    }
-    
-    for(int j=M-1;j>kk && notdone;j--){
-        if(S[j]->open ){
-            push(S[j],jj,ii);
-            notdone=false;
-        }
-    }
-    for(int i=0;i<M;i++){
-        print(S[i]);
-    }
-    //close 0
-    ii=0;
-    if(S[ii]->head==NULL){
-        S[ii]->open=false;
-    }
-    else{
-        bool notdone=true;
-        for(int j=ii-1;j>=0 && notdone;j--){
-            if(S[j]->open ){
-                printf("move to%d\n",j);
-                move(S[ii],S[j]);
-                notdone=false;
-            }
-        }
-    
-        for(int j=M-1;j>ii && notdone;j--){
-            if(S[j]->open && notdone){
-                printf("moves to%d\n",j);
-                move(S[ii],S[j]);
-                notdone=false;
-            }
-        }
-    }
-    for(int i=0;i<M;i++){
-        print(S[i]);
-    }
-    //close 3
-    ii=3;
-    if(S[ii]->head==NULL){
-        S[ii]->open=false;
-    }
-    else{
-        bool notdone=true;
-        for(int j=ii-1;j>=0 && notdone;j--){
-            if(S[j]->open ){
-                printf("move to%d\n",j);
-                move(S[ii],S[j]);
-                notdone=false;
-            }
-        }
-    
-        for(int j=M-1;j>ii && notdone;j--){
-            if(S[j]->open && notdone){
-                printf("moves to%d\n",j);
-                move(S[ii],S[j]);
-                notdone=false;
-            }
-        }
-    }
-    ///
-    for(int i=0;i<M;i++){
-        print(S[i]);
-    }
-    
-    */
     int M=0,N=0,K=0;
     scanf("%d %d %d",&M,&N,&K);
-
     line **S = (line **)malloc(sizeof(line *)*M); 
-    //line *S[100000];
     for(int i=0;i<M;i++){
         S[i]=alloc_line();
     }
-
     for(int i=0;i<N;i++){  
-        //close 的不能enter
         int ii,jj,kk;
         char str[10];
         scanf("%s",str);
@@ -516,12 +387,7 @@ void cow(){
     for(int i=0;i<M;i++){
         print(S[i]);
     }
-    
-    //for(int i=0;i<M;i++){
-    //    destroy_line(S[i]);
-    //}
-    
-   
+
     return; 
 }
 
