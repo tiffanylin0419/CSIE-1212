@@ -170,7 +170,7 @@ void Brain(){
         able_to_add=false;
       }
     }
-    for(int m=0;m<N;m++){
+    for(int m=0;m<=N;m++){
       num=price(stacks[j],initial_num+1+l+m);
       //printf("hi:%llu \n",num);
       if(num<PEEP_LARGEST(h)){
@@ -197,7 +197,7 @@ void Brain(){
       }
     }
     
-    for(int m=0;m<N;m++){
+    for(int m=0;m<=N;m++){
       num=price(stacks[j],initial_num+l+m);
       //printf("hi:%llu \n",num);
       if(num<PEEP_LARGEST(h)){
@@ -205,7 +205,6 @@ void Brain(){
         //PRINT_HEAP(h);
       }
     }
-    
   }
   
   //check
