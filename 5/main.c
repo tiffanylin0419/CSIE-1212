@@ -83,11 +83,21 @@ void REMOVE_AND_INSERT(HEAP *A,unsigned long long data){
         return;
       }
       else{
-        larger=RIGHT(cursor);
+        if(A->array[cursor]>A->array[RIGHT(cursor)]){
+          return;
+        }
+        else{
+          larger=RIGHT(cursor);
+        }
       }
     }
     else if(RIGHT(cursor)>=A->size){
-      larger=LEFT(cursor);
+      if(A->array[cursor]>A->array[LEFT(cursor)]){
+        return;
+      }
+      else{
+        larger=LEFT(cursor);
+      }
     }
     else if(A->array[cursor]>A->array[RIGHT(cursor)] && A->array[cursor]>A->array[LEFT(cursor)]){
       return;
@@ -146,7 +156,6 @@ void Brain(){
       i++;
     }
   }
-
   //max heapify
   BUILD_MAX_HEAP(h);
   
@@ -214,6 +223,9 @@ void Brain(){
   //heapsort
   HEAPSORT(h);
 
+  //check
+  //PRINT_HEAP(h);
+  
   //solve question
   for(int i=0;i<Q;i++){
     printf("%llu \n",h->array[k[i]-1]);
@@ -224,6 +236,13 @@ void Brain(){
   free(stacks);
   free(s);
   free(k);
+  /*
+  for(int i=0;i<9;i++){
+    for(int j=1;j<10;j++){
+      printf("%llu ",price(stacks[i],j));
+    }
+    printf("\n");
+  }*/
   
 }
 
