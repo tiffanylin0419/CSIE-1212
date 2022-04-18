@@ -227,10 +227,10 @@ void Brain(){
   //PRINT_HEAP(h);
   
   //solve question
-  HEAP* s_heap;
+  
   for(int i=0;i<Q;i++){
     if(s[i]!=0){
-      s_heap=createHeap(k[i]);
+      HEAP *s_heap=createHeap(k[i]);
       s_heap->size=0;
       int j=0;
       while(j<k[i]){
@@ -307,7 +307,8 @@ void Brain(){
       
       
       //printf("%llu \n",h->array[j+1]);
-      
+      free(s_heap->array);
+      free(s_heap);
     }
     else{
       printf("%llu \n",h->array[k[i]-1]);
