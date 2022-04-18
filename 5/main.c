@@ -117,7 +117,6 @@ void REMOVE_AND_INSERT(HEAP *A,unsigned long long data){
   }
 }
 
-/*
 void Brain(){
   int A,Q,N;
   scanf("%d %d %d",&A,&Q,&N);
@@ -228,160 +227,10 @@ void Brain(){
   //PRINT_HEAP(h);
   
   //solve question
+  HEAP* s_heap;
   for(int i=0;i<Q;i++){
     if(s[i]!=0){
-      HEAP* s_heap=createHeap(k[i]);
-      s_heap->size=0;
-      int j=0;
-      while(j<k[i]){
-        int num=price(s[i],j+1);
-        if(num<h->array[h->size]){
-          s_heap->array[j]=num;
-        }
-        else{
-          break;
-        }
-      }
-      for(int k=0;k<N+1;k++){
-        int num=price(s[i],j+1+k);
-        if(num<h->array[h->size]){
-          s_heap->array[j]=num;
-        }
-      }
-      HEAPSORT(s_heap);
-      j=h->array[k[i]-1];
-      int k=0;
-      while(h->array[j]>s_heap->array[k]){
-        j--;
-        k++;
-      }
-      printf("%llu \n",h->array[j]);
-    }
-    else{
-      printf("%llu \n",h->array[k[i]-1]);
-    }
-  }
-  free(h->array);
-  free(h);
-  free(stacks);
-  free(s);
-  free(k);
-}
-*/
-
-void Brain(){
-  int A,Q,N;
-  scanf("%d %d %d",&A,&Q,&N);
-  int *stacks = (int*) malloc(sizeof(int)*A);
-  
-  for(int i=0;i<A;i++){
-    scanf("%d",&stacks[i]);
-  }
-  
-  int *s = (int*) malloc(sizeof(int)*Q);
-  int *k = (int*) malloc(sizeof(int)*Q);
-  for(int i=0;i<Q;i++){
-    scanf("%d %d",&s[i],&k[i]);
-  }
-  
-  int max_k=0;
-  for(int i=0;i<Q;i++){
-    if(k[i]>max_k){
-      max_k=k[i];
-    }
-  }
-  
-  //get k values
-  HEAP* h=createHeap(max_k);
-  int mid=max_k%A;
-  int initial_num=max_k/A+1;
-  int i=0;
-  for (int j=0;j<mid;j++){
-    for(int l=1;l<=initial_num;l++){
-      h->array[i]=price(stacks[j],l);
-      i++;
-    }
-  }
-  for (int j=mid;j<A;j++){
-    for(int l=1;l<initial_num;l++){
-      h->array[i]=price(stacks[j],l);
-      i++;
-    }
-  }
-  //max heapify
-  BUILD_MAX_HEAP(h);
-  
-  //check
-  //printf("%llu \n",h->array[0]);
-  //PRINT_HEAP(h);
-
-  //add A*N values
-  unsigned long long num;
-  for (int j=0;j<mid;j++){
-    bool able_to_add=true;
-    int l=0;
-    for(;able_to_add;l++){
-      num=price(stacks[j],initial_num+1+l);
-      if(num<PEEP_LARGEST(h)){
-        REMOVE_AND_INSERT(h,num);
-        //printf("%llu\n",num);
-        //PRINT_HEAP(h);
-      }
-      else{
-        able_to_add=false;
-      }
-    }
-    for(int m=0;m<=N;m++){
-      num=price(stacks[j],initial_num+1+l+m);
-      //printf("hi:%llu \n",num);
-      if(num<PEEP_LARGEST(h)){
-        REMOVE_AND_INSERT(h,num);
-        //PRINT_HEAP(h);
-      }
-    }
-  }
-  //check
-  //PRINT_HEAP(h);
-  //printf("%llu \n",h->array[0]);
-  
-  for (int j=mid;j<A;j++){
-    bool able_to_add=true;
-    int l=0;
-    for(;able_to_add;l++){
-      num=price(stacks[j],initial_num+l);
-      if(num<PEEP_LARGEST(h)){
-        REMOVE_AND_INSERT(h,num);
-        //PRINT_HEAP(h);
-      }
-      else{
-        able_to_add=false;
-      }
-    }
-    
-    for(int m=0;m<=N;m++){
-      num=price(stacks[j],initial_num+l+m);
-      //printf("hi:%llu \n",num);
-      if(num<PEEP_LARGEST(h)){
-        REMOVE_AND_INSERT(h,num);
-        //PRINT_HEAP(h);
-      }
-    }
-  }
-  
-  //check
-  //PRINT_HEAP(h);
-  //printf("%llu \n",h->array[0]);
-
-  //heapsort
-  HEAPSORT(h);
-
-  //check
-  //PRINT_HEAP(h);
-  
-  //solve question
-  for(int i=0;i<Q;i++){
-    if(s[i]!=0){
-      HEAP* s_heap=createHeap(k[i]);
+      s_heap=createHeap(k[i]);
       s_heap->size=0;
       int j=0;
       while(j<k[i]){
@@ -396,7 +245,7 @@ void Brain(){
         j++;
       }
       for(int l=0;l<N+1 && j+l<k[i];l++){
-        int num=price(s[i],j+1+l);
+        unsigned long long num=price(s[i],j+1+l);
         if(num<h->array[h->size-1]){
           s_heap->array[j+l]=num;
           s_heap->size++;
@@ -407,6 +256,7 @@ void Brain(){
       BUILD_MAX_HEAP(s_heap);
       HEAPSORT(s_heap);
       //PRINT_HEAP(s_heap);
+      //printf("%d %d\n",k[i],h->size);
       j=k[i]-1;
       int l=0;
       while(j>=0 && l<s_heap->size){
@@ -418,7 +268,18 @@ void Brain(){
           break;
         }
       }
-      printf("%llu \n",h->array[j]);
+      //printf("%d\n",j);
+      if(h->array[j+1]==s_heap->array[l-1]){
+        printf("%llu \n",s_heap->array[l-1]);
+      }
+      else if(h->array[j+1]>s_heap->array[l]){
+        printf("%llu \n",s_heap->array[l]);
+      }
+      else{
+        printf("%llu \n",h->array[j]);
+      }
+      
+      //printf("%llu \n",h->array[j+1]);
       
     }
     else{
