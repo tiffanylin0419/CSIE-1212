@@ -265,19 +265,46 @@ void Brain(){
           l++;
         }
         else{
+          //printf("%llu <= %llu \n",h->array[j],s_heap->array[l]);
           break;
         }
       }
+      /*
+      printf("hi\n");
+      printf("%llu \n",s_heap->array[l-1]);
+      printf("%llu \n",s_heap->array[l]);
+      printf("%llu \n",s_heap->array[l+1]);
+      printf("%llu \n",h->array[j-1]);
+      printf("%llu \n",h->array[j]);
+      printf("%llu \n",h->array[j+1]);
+      printf("hi\n");
       //printf("%d\n",j);
-      if(h->array[j+1]==s_heap->array[l-1]){
-        printf("%llu \n",s_heap->array[l-1]);
-      }
-      else if(h->array[j+1]>s_heap->array[l]){
-        printf("%llu \n",s_heap->array[l]);
+      */
+      unsigned long long num1=h->array[j];
+      unsigned long long num2=s_heap->array[l];
+      unsigned long long num3=h->array[j-1];
+      unsigned long long num4=s_heap->array[l-1];
+      unsigned long long second_large;
+      if(num1>num2){
+        if(num2>num3){
+          second_large=num2;
+        }
+        else{
+          second_large=num3;
+        }
       }
       else{
-        printf("%llu \n",h->array[j]);
+        if(num1>num4){
+          second_large=num1;
+        }
+        else{
+          second_large=num4;
+        }
       }
+      
+      
+      printf("%llu \n",second_large);
+      
       
       //printf("%llu \n",h->array[j+1]);
       
