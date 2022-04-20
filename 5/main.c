@@ -278,21 +278,19 @@ void Brain(){
           break;
         }
         else if(sorted_m<unsorted_k){
-          left_num=mid+1;
+          left_num=mid;
         }
         else{
-          right_num=mid-1;
+          right_num=mid;
         }
-    
         mid=(left_num+right_num)/2;
-
         sorted_m=h->array[mid];
         sorted_m1=h->array[mid+1];
         unsorted_k=kth(s[i],k[i]-mid-1,N);//func
         unsorted_k1=kth(s[i],k[i]-mid,N);//func
         
         //keep second smallest
-        if(right_num==left_num){
+        if(right_num-left_num<=1){
           if(sorted_m==unsorted_k){
             printf("%llu\n",unsorted_k);
           }
