@@ -249,6 +249,17 @@ void Brain(){
   
   for(int i=0;i<Q;i++){
     if(s[i]!=0){
+      //邊界條件
+      //continue;
+      if(h->array[0]>=kth(s[i],k[i],N)){
+        printf("%llu",kth(s[i],k[i],N));
+        continue;
+      }
+      else if(h->array[k[i]-1]<=kth(s[i],1,N)){
+        printf("%llu",h->array[k[i]-1]);
+        continue;
+      }
+
       int left_num=0;
       int right_num=k[i]-1;
       int mid=(left_num+right_num)/2;
@@ -274,10 +285,6 @@ void Brain(){
         }
     
         mid=(left_num+right_num)/2;
-        //邊界條件
-        if(mid==k[i]-1){
-
-        }
 
         sorted_m=h->array[mid];
         sorted_m1=h->array[mid+1];
