@@ -117,6 +117,25 @@ void REMOVE_AND_INSERT(HEAP *A,unsigned long long data){
   }
 }
 
+unsigned long long kth(int stock, int num, int day){
+  if(num>day){
+    HEAP* h=createHeap(2*day+1);
+    for(int i=0;i<h->size;i++){
+      h->array[i]=price(stock,num-day+i);
+    } 
+    HEAPSORT(h);
+    return h->array[day];
+  }
+  else{
+    HEAP* h=createHeap(num+day);
+    for(int i=0;i<h->size;i++){
+      h->array[i]=price(stock,i);
+    }
+    HEAPSORT(h);
+    return h->array[num];
+  }
+}
+
 void Brain(){
   int A,Q,N;
   scanf("%d %d %d",&A,&Q,&N);
@@ -230,85 +249,65 @@ void Brain(){
   
   for(int i=0;i<Q;i++){
     if(s[i]!=0){
-      HEAP *s_heap=createHeap(k[i]);
-      s_heap->size=0;
-      int j=0;
-      while(j<k[i]){
-        unsigned long long num=price(s[i],j+1);
-        if(num<h->array[h->size-1]){
-          s_heap->array[j]=num;
-          s_heap->size++;
-        }
-        else{
+      int left_num=0;
+      int right_num=k[i]-1;
+      int mid=(left_num+right_num)/2;
+      unsigned long long sorted_m=h->array[mid];
+      unsigned long long sorted_m1=h->array[mid+1];
+      unsigned long long unsorted_k=kth(s[i],k[i]-mid-1,N);//func
+      unsigned long long unsorted_k1=kth(s[i],k[i]-mid,N);//func
+      //int pp=0;
+      while(true){
+        //未處理邊界條件
+        if(unsorted_k<=sorted_m && sorted_m<=unsorted_k1){
+          printf("%llu\n",sorted_m);
           break;
         }
-        j++;
-      }
-      for(int l=0;l<N+1 && j+l<k[i];l++){
-        unsigned long long num=price(s[i],j+1+l);
-        if(num<h->array[h->size-1]){
-          s_heap->array[j+l]=num;
-          s_heap->size++;
-        }
-      }
-      
-      //???
-      BUILD_MAX_HEAP(s_heap);
-      HEAPSORT(s_heap);
-      //PRINT_HEAP(s_heap);
-      //printf("%d %d\n",k[i],h->size);
-      j=k[i]-1;
-      int l=0;
-      while(j>=0 && l<s_heap->size){
-        if(h->array[j]>s_heap->array[l]){
-          j--;
-          l++;
-        }
-        else{
-          //printf("%llu <= %llu \n",h->array[j],s_heap->array[l]);
+        else if(sorted_m<=unsorted_k1 && unsorted_k1<=sorted_m1){
+          printf("%llu\n",unsorted_k);
           break;
         }
-      }
-      /*
-      printf("hi\n");
-      printf("%llu \n",s_heap->array[l-1]);
-      printf("%llu \n",s_heap->array[l]);
-      printf("%llu \n",s_heap->array[l+1]);
-      printf("%llu \n",h->array[j-1]);
-      printf("%llu \n",h->array[j]);
-      printf("%llu \n",h->array[j+1]);
-      printf("hi\n");
-      //printf("%d\n",j);
-      */
-      unsigned long long num1=h->array[j];
-      unsigned long long num2=s_heap->array[l];
-      unsigned long long num3=h->array[j-1];
-      unsigned long long num4=s_heap->array[l-1];
-      unsigned long long second_large;
-      if(num1>num2){
-        if(num2>num3){
-          second_large=num2;
+        else if(sorted_m<unsorted_k){
+          left_num=mid+1;
         }
         else{
-          second_large=num3;
+          right_num=mid-1;
         }
+        mid=(left_num+right_num)/2;
+        sorted_m=h->array[mid];
+        sorted_m1=h->array[mid+1];
+        unsorted_k=kth(s[i],k[i]-mid-1,N);//func
+        unsorted_k1=kth(s[i],k[i]-mid,N);//func
+        //keep second smallest
+        if(right_num==left_num){
+          if(sorted_m==unsorted_k){
+            printf("%llu\n",unsorted_k);
+          }
+          if(sorted_m<unsorted_k){
+            if(unsorted_k<sorted_m1){
+              printf("%llu\n",unsorted_k);
+            }
+            else{
+              printf("%llu\n",sorted_m1);
+            }
+          }
+          else{
+            if(unsorted_k+1<sorted_m){
+              printf("%llu\n",unsorted_k+1);
+            }
+            else{
+              printf("%llu\n",sorted_m);
+            }
+          }
+          break;
+          //printf("%d %d %d ",left_num,mid,right_num);
+          //printf("%llu %llu %llu %llu\n",sorted_m,sorted_m1,unsorted_k,unsorted_k1);
+        }
+        //pp++;
       }
-      else{
-        if(num1>num4){
-          second_large=num1;
-        }
-        else{
-          second_large=num4;
-        }
-      }
-      
-      
-      printf("%llu \n",second_large);
-      
-      
-      //printf("%llu \n",h->array[j+1]);
-      free(s_heap->array);
-      free(s_heap);
+
+      //??
+      //k-m-1
     }
     else{
       printf("%llu \n",h->array[k[i]-1]);
