@@ -129,7 +129,7 @@ unsigned long long kth(int stock, int num, int day){
   else{
     HEAP* h=createHeap(num+day);
     for(int i=0;i<h->size;i++){
-      h->array[i]=price(stock,i);
+      h->array[i]=price(stock,i+1);
     }
     HEAPSORT(h);
     return h->array[num];
@@ -258,7 +258,6 @@ void Brain(){
       unsigned long long unsorted_k1=kth(s[i],k[i]-mid,N);//func
       //int pp=0;
       while(true){
-        //未處理邊界條件
         if(unsorted_k<=sorted_m && sorted_m<=unsorted_k1){
           printf("%llu\n",sorted_m);
           break;
@@ -273,11 +272,18 @@ void Brain(){
         else{
           right_num=mid-1;
         }
+    
         mid=(left_num+right_num)/2;
+        //邊界條件
+        if(mid==k[i]-1){
+
+        }
+
         sorted_m=h->array[mid];
         sorted_m1=h->array[mid+1];
         unsorted_k=kth(s[i],k[i]-mid-1,N);//func
         unsorted_k1=kth(s[i],k[i]-mid,N);//func
+        
         //keep second smallest
         if(right_num==left_num){
           if(sorted_m==unsorted_k){
