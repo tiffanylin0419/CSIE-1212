@@ -132,7 +132,7 @@ unsigned long long kth(int stock, int num, int day){
       h->array[i]=price(stock,i+1);
     }
     HEAPSORT(h);
-    return h->array[num];
+    return h->array[num-1];
   }
 }
 
