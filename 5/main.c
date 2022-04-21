@@ -248,6 +248,40 @@ void Brain(){
   for(int i=0;i<Q;i++){
     if(s[i]!=0){
       //邊界條件
+      if(kth(s[i],k[i]-1,N)<=h->array[0] && h->array[0]<=kth(s[i],k[i],N)){
+        printf("%llu",h->array[0]);
+        continue;
+      }
+      else if(kth(s[i],k[i]-2,N)<=h->array[1] && h->array[0]<=kth(s[i],k[i]-1,N)){
+        printf("%llu",h->array[1]);
+        continue;
+      }
+      else if(kth(s[i],1,N)<=h->array[k[i]-2] && h->array[k[i]-2]<=kth(s[i],2,N)){
+        printf("%llu",h->array[k[i]-2]);
+        continue;
+      }
+      else if(h->array[k[i]-1]<=kth(s[i],1,N)){
+        printf("%llu",h->array[k[i]-1]);
+        continue;
+      }
+
+      if(h->array[k[i]-2]<=kth(s[i],1,N) && kth(s[i],1,N)<=h->array[k[i]-1]){
+        printf("%llu",kth(s[i],1,N));
+        continue;
+      }
+      else if(h->array[k[i]-3]<=kth(s[i],2,N) && kth(s[i],2,N)<=h->array[k[i]-2]){
+        printf("%llu",kth(s[i],2,N));
+        continue;
+      }
+      else if(h->array[0]<=kth(s[i],k[i]-1,N) && kth(s[i],k[i]-1,N)<=h->array[1]){
+        printf("%llu",kth(s[i],k[i]-1,N));
+        continue;
+      }
+      else if(kth(s[i],k[i],N)<=h->array[0]){
+        printf("%llu",kth(s[i],k[i],N));
+        continue;
+      }
+      /*
       if(h->array[0]>=kth(s[i],k[i]-1,N)){
         if(h->array[0]>=kth(s[i],k[i],N)){
           printf("%llu",kth(s[i],k[i],N));
@@ -268,6 +302,7 @@ void Brain(){
           continue;
         }
       }
+      */
       //binary search
       int left_num=0;
       int right_num=k[i]-1;
@@ -279,10 +314,12 @@ void Brain(){
       while(true){
         if(unsorted_k<=sorted_m && sorted_m<=unsorted_k1){
           printf("%llu\n",sorted_m);
+          //printf("e");
           break;
         }
         else if(sorted_m<=unsorted_k && unsorted_k<=sorted_m1){
           printf("%llu\n",unsorted_k);
+          //printf("f");
           break;
         }
         else if(sorted_m<unsorted_k){
@@ -303,31 +340,6 @@ void Brain(){
         sorted_m1=h->array[mid+1];
         unsorted_k=kth(s[i],k[i]-mid-1,N);//func
         unsorted_k1=kth(s[i],k[i]-mid,N);//func
-        //keep second smallest
-        /*
-        if(right_num-left_num<=1){
-          if(sorted_m==unsorted_k){
-            printf("%llu\n",unsorted_k);
-          }
-          if(sorted_m<unsorted_k){
-            if(unsorted_k<sorted_m1){
-              printf("%llu\n",unsorted_k);
-            }
-            else{
-              printf("%llu\n",sorted_m1);
-            }
-          }
-          else{
-            if(unsorted_k+1<sorted_m){
-              printf("%llu\n",unsorted_k+1);
-            }
-            else{
-              printf("%llu\n",sorted_m);
-            }
-          }
-          break;
-        }
-        */
       }
     }
     else{
