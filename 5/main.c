@@ -318,7 +318,7 @@ void Brain(){
       
       //binary search
       int left_num=0;
-      int right_num=k[i]-1;
+      int right_num=k[i];
       int mid=(left_num+right_num)/2;
       unsigned long long sorted_m=h->array[mid];
       unsigned long long sorted_m1=h->array[mid+1];
@@ -335,15 +335,19 @@ void Brain(){
           //printf("f");
           break;
         }
-        else if(sorted_m<unsorted_k){
-          /*
-          if(left_num-mid==0){
-            left_num++;
+        //邊界
+        if(right_num-left_num<=1){
+          if(left_num==0){
+            printf("%llu\n",kth(s[i],k[i],N));
+            break;
           }
-          */
-          //else{
-            left_num=mid;
-          //}
+          else if(right_num==k[i]){
+            printf("%llu\n",h->array[k[i]-1]);
+          }
+          break;
+        }
+        if(sorted_m<unsorted_k){
+          left_num=mid;
         }
         else{
           right_num=mid;
