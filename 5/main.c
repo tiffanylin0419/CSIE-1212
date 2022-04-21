@@ -54,7 +54,6 @@ void PRINT_HEAP(HEAP *A){
     printf("%d:%llu ",i+1,A->array[i]);
   }
   printf("\nsize: %d\n",A->size);
-
 }    
 void HEAPSORT(HEAP *A){
   BUILD_MAX_HEAP(A);
@@ -250,16 +249,27 @@ void Brain(){
   for(int i=0;i<Q;i++){
     if(s[i]!=0){
       //邊界條件
-      //continue;
-      if(h->array[0]>=kth(s[i],k[i],N)){
-        printf("%llu",kth(s[i],k[i],N));
-        continue;
+      if(h->array[0]>=kth(s[i],k[i]-1,N)){
+        if(h->array[0]>=kth(s[i],k[i],N)){
+          printf("%llu",kth(s[i],k[i],N));
+          continue;
+        }
+        else{
+          printf("%llu",h->array[0]);
+          continue;
+        }
       }
-      else if(h->array[k[i]-1]<=kth(s[i],1,N)){
-        printf("%llu",h->array[k[i]-1]);
-        continue;
+      if(h->array[k[i]-2]<=kth(s[i],1,N)){
+        if(h->array[k[i]-1]>=kth(s[i],1,N)){
+          printf("%llu",kth(s[i],1,N));
+          continue; 
+        }
+        else{
+          printf("%llu",h->array[k[i]-1]);
+          continue;
+        }
       }
-
+      //binary search
       int left_num=0;
       int right_num=k[i]-1;
       int mid=(left_num+right_num)/2;
@@ -267,18 +277,22 @@ void Brain(){
       unsigned long long sorted_m1=h->array[mid+1];
       unsigned long long unsorted_k=kth(s[i],k[i]-mid-1,N);//func
       unsigned long long unsorted_k1=kth(s[i],k[i]-mid,N);//func
-      //int pp=0;
       while(true){
         if(unsorted_k<=sorted_m && sorted_m<=unsorted_k1){
           printf("%llu\n",sorted_m);
           break;
         }
-        else if(sorted_m<=unsorted_k1 && unsorted_k1<=sorted_m1){
+        else if(sorted_m<=unsorted_k && unsorted_k<=sorted_m1){
           printf("%llu\n",unsorted_k);
           break;
         }
         else if(sorted_m<unsorted_k){
-          left_num=mid;
+          if(left_num-mid==0){
+            left_num++;
+          }
+          else{
+            left_num=mid;
+          }
         }
         else{
           right_num=mid;
@@ -288,8 +302,8 @@ void Brain(){
         sorted_m1=h->array[mid+1];
         unsorted_k=kth(s[i],k[i]-mid-1,N);//func
         unsorted_k1=kth(s[i],k[i]-mid,N);//func
-        
         //keep second smallest
+        /*
         if(right_num-left_num<=1){
           if(sorted_m==unsorted_k){
             printf("%llu\n",unsorted_k);
@@ -311,14 +325,9 @@ void Brain(){
             }
           }
           break;
-          //printf("%d %d %d ",left_num,mid,right_num);
-          //printf("%llu %llu %llu %llu\n",sorted_m,sorted_m1,unsorted_k,unsorted_k1);
         }
-        //pp++;
+        */
       }
-
-      //??
-      //k-m-1
     }
     else{
       printf("%llu \n",h->array[k[i]-1]);
