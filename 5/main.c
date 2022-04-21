@@ -245,7 +245,6 @@ void Brain(){
   //PRINT_HEAP(h);
   
   //solve question
-  
   for(int i=0;i<Q;i++){
     if(s[i]!=0){
       //邊界條件
@@ -287,12 +286,14 @@ void Brain(){
           break;
         }
         else if(sorted_m<unsorted_k){
+          /*
           if(left_num-mid==0){
             left_num++;
           }
-          else{
+          */
+          //else{
             left_num=mid;
-          }
+          //}
         }
         else{
           right_num=mid;
