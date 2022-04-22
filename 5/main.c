@@ -251,11 +251,11 @@ void Brain(){
       if(k[i]==1){
         if(kth(s[i],1,N)>h->array[0]){
           printf("%llu",h->array[0]);
-          continue;
         }
         else{
           printf("%llu",kth(s[i],1,N));
         }
+        continue;
       }
 
       //邊界條件
@@ -298,27 +298,25 @@ void Brain(){
       if(h->array[0]>=kth(s[i],k[i]-1,N)){
         if(h->array[0]>=kth(s[i],k[i],N)){
           printf("%llu",kth(s[i],k[i],N));
-          continue;
         }
         else{
           printf("%llu",h->array[0]);
-          continue;
         }
+        continue;
       }
       if(h->array[k[i]-2]<=kth(s[i],1,N)){
         if(h->array[k[i]-1]>=kth(s[i],1,N)){
           printf("%llu",kth(s[i],1,N));
-          continue; 
         }
         else{
           printf("%llu",h->array[k[i]-1]);
-          continue;
         }
+        continue; 
       }
       
       //binary search
       int left_num=0;
-      int right_num=k[i];
+      int right_num=k[i]-1;
       int mid=(left_num+right_num)/2;
       unsigned long long sorted_m=h->array[mid];
       unsigned long long sorted_m1=h->array[mid+1];
@@ -327,26 +325,13 @@ void Brain(){
       while(true){
         if(unsorted_k<=sorted_m && sorted_m<=unsorted_k1){
           printf("%llu\n",sorted_m);
-          //printf("e");
           break;
         }
         else if(sorted_m<=unsorted_k && unsorted_k<=sorted_m1){
           printf("%llu\n",unsorted_k);
-          //printf("f");
           break;
         }
-        //邊界
-        if(right_num-left_num<=1){
-          if(left_num==0){
-            printf("%llu\n",kth(s[i],k[i],N));
-            break;
-          }
-          else if(right_num==k[i]){
-            printf("%llu\n",h->array[k[i]-1]);
-          }
-          break;
-        }
-        if(sorted_m<unsorted_k){
+        else if(sorted_m<unsorted_k){
           left_num=mid;
         }
         else{
