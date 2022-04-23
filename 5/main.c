@@ -259,7 +259,7 @@ void Brain(){
       }
 
       //邊界條件
-      /*
+      
       if(kth(s[i],k[i]-1,N)<=h->array[0] && h->array[0]<=kth(s[i],k[i],N)){
         printf("%llu",h->array[0]);
         continue;
@@ -293,8 +293,8 @@ void Brain(){
         printf("%llu",kth(s[i],k[i],N));
         continue;
       }
-      */
       
+      /*
       if(h->array[0]>=kth(s[i],k[i]-1,N)){
         if(h->array[0]>=kth(s[i],k[i],N)){
           printf("%llu",kth(s[i],k[i],N));
@@ -313,7 +313,7 @@ void Brain(){
         }
         continue; 
       }
-      
+      */
       //binary search
       int left_num=0;
       int right_num=k[i]-1;
