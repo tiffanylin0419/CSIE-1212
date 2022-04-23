@@ -249,71 +249,65 @@ void Brain(){
     if(s[i]!=0){
       //短k條件
       if(k[i]==1){
-        if(kth(s[i],1,N)>h->array[0]){
-          printf("%llu",h->array[0]);
+        unsigned long long first_in_s=kth(s[i],1,N);
+        if(first_in_s>h->array[0]){
+          printf("%llu\n",h->array[0]);
         }
         else{
-          printf("%llu",kth(s[i],1,N));
+          printf("%llu\n",first_in_s);
+        }
+        continue;
+      }
+      else if(k[i]==2){
+        unsigned long long first_in_s=kth(s[i],1,N);
+        unsigned long long second_in_s=kth(s[i],2,N);
+        unsigned long long first_in_sort=h->array[0];
+        unsigned long long second_in_sort=h->array[1];
+        unsigned long long second_small;
+        unsigned long long first_large;
+        if(second_in_s>second_in_sort){
+          second_small=second_in_sort;
+        }
+        else{
+          second_small=second_in_s;
+        }
+
+        if(first_in_s>first_in_sort){
+          first_large=first_in_s;
+        }
+        else{
+          first_large=first_in_sort;
+        }
+
+        if(first_large<second_small){
+          printf("%llu\n",first_large);
+        }
+        else{
+          printf("%llu\n",second_small);
         }
         continue;
       }
 
-      //邊界條件
-      
-      if(kth(s[i],k[i]-1,N)<=h->array[0] && h->array[0]<=kth(s[i],k[i],N)){
-        printf("%llu",h->array[0]);
-        continue;
-      }
-      else if(kth(s[i],k[i]-2,N)<=h->array[1] && h->array[0]<=kth(s[i],k[i]-1,N)){
-        printf("%llu",h->array[1]);
-        continue;
-      }
-      else if(kth(s[i],1,N)<=h->array[k[i]-2] && h->array[k[i]-2]<=kth(s[i],2,N)){
-        printf("%llu",h->array[k[i]-2]);
-        continue;
-      }
-      else if(h->array[k[i]-1]<=kth(s[i],1,N)){
-        printf("%llu",h->array[k[i]-1]);
-        continue;
-      }
-
-      if(h->array[k[i]-2]<=kth(s[i],1,N) && kth(s[i],1,N)<=h->array[k[i]-1]){
-        printf("%llu",kth(s[i],1,N));
-        continue;
-      }
-      else if(h->array[k[i]-3]<=kth(s[i],2,N) && kth(s[i],2,N)<=h->array[k[i]-2]){
-        printf("%llu",kth(s[i],2,N));
-        continue;
-      }
-      else if(h->array[0]<=kth(s[i],k[i]-1,N) && kth(s[i],k[i]-1,N)<=h->array[1]){
-        printf("%llu",kth(s[i],k[i]-1,N));
-        continue;
-      }
-      else if(kth(s[i],k[i],N)<=h->array[0]){
-        printf("%llu",kth(s[i],k[i],N));
-        continue;
-      }
-      
-      /*
+      //邊界條件      
       if(h->array[0]>=kth(s[i],k[i]-1,N)){
         if(h->array[0]>=kth(s[i],k[i],N)){
-          printf("%llu",kth(s[i],k[i],N));
+          printf("%llu\n",kth(s[i],k[i],N));
         }
         else{
-          printf("%llu",h->array[0]);
+          printf("%llu\n",h->array[0]);
         }
         continue;
       }
       if(h->array[k[i]-2]<=kth(s[i],1,N)){
         if(h->array[k[i]-1]>=kth(s[i],1,N)){
-          printf("%llu",kth(s[i],1,N));
+          printf("%llu\n",kth(s[i],1,N));
         }
         else{
-          printf("%llu",h->array[k[i]-1]);
+          printf("%llu\n",h->array[k[i]-1]);
         }
         continue; 
       }
-      */
+      
       //binary search
       int left_num=0;
       int right_num=k[i]-1;
@@ -345,7 +339,7 @@ void Brain(){
       }
     }
     else{
-      printf("%llu \n",h->array[k[i]-1]);
+      printf("%llu\n",h->array[k[i]-1]);
     }
   }
   free(h->array);
@@ -507,7 +501,6 @@ void Brain(){
         }
       }
       
-      //???
       BUILD_MAX_HEAP(s_heap);
       HEAPSORT(s_heap);
       //PRINT_HEAP(s_heap);
