@@ -358,8 +358,7 @@ void Brain(){
         mid=(left_num+right_num)/2;
         sorted_m=h->array[mid];
         sorted_m1=h->array[mid+1];
-        unsorted_k=kth(s[i],k[i]-mid-1,N);//func
-        unsorted_k1=kth(s[i],k[i]-mid,N);//func
+        return_kth(s[i],k[i]-mid-1,N,&unsorted_k,&unsorted_k1);
       }
     }
     else{
