@@ -135,6 +135,28 @@ unsigned long long kth(int stock, int num, int day){
   }
 }
 
+
+void return_kth(int stock, int num, int day,unsigned long long *a,unsigned long long *b){
+  if(num>day){
+    HEAP* h=createHeap(2*day+1);
+    for(int i=0;i<h->size;i++){
+      h->array[i]=price(stock,num-day+i);
+    } 
+    HEAPSORT(h);
+    *a=h->array[day];
+    *b=h->array[day+1];
+  }
+  else{
+    HEAP* h=createHeap(num+day);
+    for(int i=0;i<h->size;i++){
+      h->array[i]=price(stock,i+1);
+    }
+    HEAPSORT(h);
+    *a=h->array[num-1];
+    *b=h->array[num];
+  }
+}
+
 void Brain(){
   int A,Q,N;
   scanf("%d %d %d",&A,&Q,&N);
@@ -259,8 +281,9 @@ void Brain(){
         continue;
       }
       else if(k[i]==2){
-        unsigned long long first_in_s=kth(s[i],1,N);
-        unsigned long long second_in_s=kth(s[i],2,N);
+        unsigned long long first_in_s;
+        unsigned long long second_in_s;
+        return_kth(s[i],1,N,&first_in_s,&second_in_s);
         unsigned long long first_in_sort=h->array[0];
         unsigned long long second_in_sort=h->array[1];
         unsigned long long second_small;
@@ -314,8 +337,9 @@ void Brain(){
       int mid=(left_num+right_num)/2;
       unsigned long long sorted_m=h->array[mid];
       unsigned long long sorted_m1=h->array[mid+1];
-      unsigned long long unsorted_k=kth(s[i],k[i]-mid-1,N);//func
-      unsigned long long unsorted_k1=kth(s[i],k[i]-mid,N);//func
+      unsigned long long unsorted_k;//func
+      unsigned long long unsorted_k1;//func
+      return_kth(s[i],k[i]-mid-1,N,&unsorted_k,&unsorted_k1);
       while(true){
         if(unsorted_k<=sorted_m && sorted_m<=unsorted_k1){
           printf("%llu\n",sorted_m);
