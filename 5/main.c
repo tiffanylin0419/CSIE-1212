@@ -49,12 +49,7 @@ void BUILD_MAX_HEAP(HEAP *A){
     MAX_HEAPIFY(A,i);
   }
 }
-void PRINT_HEAP(HEAP *A){
-  for(int i=0;i<A->size;i++){
-    printf("%d:%llu ",i+1,A->array[i]);
-  }
-  printf("\nsize: %d\n",A->size);
-}    
+
 void HEAPSORT(HEAP *A){
   BUILD_MAX_HEAP(A);
   int size=A->size;
@@ -116,6 +111,114 @@ void REMOVE_AND_INSERT(HEAP *A,unsigned long long data){
   }
 }
 
+
+
+//min
+typedef struct node{ 
+  unsigned long long data;
+  int group; 
+} NODE;
+
+NODE *alloc(unsigned long long data, int group){
+  NODE *tmp = (NODE *)malloc(sizeof(NODE)); 
+  tmp->data = data;
+  tmp->group = group;
+  return tmp;
+}
+
+typedef struct node_heap{
+  NODE** array;
+  int size;
+}NODE_HEAP;
+
+NODE_HEAP* createNodeHeap(int size) {
+  NODE_HEAP* newNode = malloc(sizeof(NODE_HEAP));
+  newNode->size = size;
+  newNode->array=malloc(sizeof(NODE*)*size);
+  return newNode;
+}
+
+void MIN_HEAPIFY(NODE_HEAP *A,int i){
+  int l = LEFT(i);
+  int r = RIGHT(i);
+  int smallest=i;
+  if(l < A->size){
+    if(A->array[l]->data<A->array[i]->data){
+      smallest = l ;
+    }
+  }
+  if(r < A->size) {
+    if(A->array[r]->data<A->array[smallest]->data){
+      smallest = r;
+    }
+  }  
+  if(smallest != i){
+    NODE *tmp=A->array[i];
+    A->array[i]=A->array[smallest];
+    A->array[smallest]=tmp;
+    MIN_HEAPIFY(A,smallest);
+  }    
+}
+void BUILD_MIN_HEAP(NODE_HEAP *A){
+  for(int i =A->size/2;i>=0;i--){
+    MIN_HEAPIFY(A,i);
+  }
+}
+void REMOVE_AND_INSERT_NODE(NODE_HEAP *A,unsigned long long* ki,int *stacks,int length,int* A_pos){
+  *ki=A->array[0]->data;
+  int group=A->array[0]->group;
+  if(group>=length){
+    //delete min
+    A->array[0]->data=A->array[A->size-1]->data;
+    A->array[0]->group=A->array[A->size-1]->group;
+    A->size--;
+  }
+  else{
+    A->array[0]->data=price(stacks[group],A_pos[group]);
+    A_pos[group]++;
+  }
+  
+  int cursor = 0; 
+  int smaller;
+    while(cursor<A->size){
+    smaller=cursor;
+    if(LEFT(cursor)>=A->size){
+      if(RIGHT(cursor)>=A->size){
+        return;
+      }
+      else{
+        if(A->array[cursor]->data<A->array[RIGHT(cursor)]->data){
+          return;
+        }
+        else{
+          smaller=RIGHT(cursor);
+        }
+      }
+    }
+    else if(RIGHT(cursor)>=A->size){
+      if(A->array[cursor]->data<A->array[LEFT(cursor)]->data){
+        return;
+      }
+      else{
+        smaller=LEFT(cursor);
+      }
+    }
+    else if(A->array[cursor]->data<A->array[RIGHT(cursor)]->data && A->array[cursor]->data<A->array[LEFT(cursor)]->data){
+      return;
+    }
+    else if(A->array[RIGHT(cursor)]->data<A->array[LEFT(cursor)]->data){
+      smaller=RIGHT(cursor);
+    }
+    else{
+      smaller=LEFT(cursor);
+    }
+    NODE* tmp=A->array[cursor];
+    A->array[cursor]=A->array[smaller];
+    A->array[smaller]=tmp;
+    cursor = smaller;
+  }
+}
+
 unsigned long long kth(int stock, int num, int day){
   if(num>day){
     HEAP* h=createHeap(2*day+1);
@@ -133,6 +236,7 @@ unsigned long long kth(int stock, int num, int day){
     HEAPSORT(h);
     return h->array[num-1];
   }
+  
 }
 
 
@@ -145,6 +249,8 @@ void return_kth(int stock, int num, int day,unsigned long long *a,unsigned long 
     HEAPSORT(h);
     *a=h->array[day];
     *b=h->array[day+1];
+    free(h->array);
+    free(h);  
   }
   else{
     HEAP* h=createHeap(num+day);
@@ -154,7 +260,10 @@ void return_kth(int stock, int num, int day,unsigned long long *a,unsigned long 
     HEAPSORT(h);
     *a=h->array[num-1];
     *b=h->array[num];
+    free(h->array);
+    free(h);
   }
+  
 }
 
 void Brain(){
@@ -179,92 +288,26 @@ void Brain(){
     }
   }
   
-  //get k values
-  HEAP* h=createHeap(max_k);
-  int mid=max_k%A;
-  int initial_num=max_k/A+1;
+  //get NA min heap
+  NODE_HEAP* h=createNodeHeap(N*A);
   int i=0;
-  for (int j=0;j<mid;j++){
-    for(int l=1;l<=initial_num;l++){
-      h->array[i]=price(stacks[j],l);
+  for (int j=0;j<A;j++){
+    for(int l=1;l<=N;l++){
+      h->array[i]=alloc(price(stacks[j],l),j);
       i++;
     }
   }
-  for (int j=mid;j<A;j++){
-    for(int l=1;l<initial_num;l++){
-      h->array[i]=price(stacks[j],l);
-      i++;
-    }
+  BUILD_MIN_HEAP(h);
+  //create array k & array A
+  unsigned long long *array_k=malloc(sizeof(unsigned long long)*max_k);
+  int *A_pos=malloc(sizeof(int)*A);
+  for(int i=0;i<A;i++){
+    A_pos[i]=N+1;
   }
-  //max heapify
-  BUILD_MAX_HEAP(h);
-  
-  //check
-  //printf("%llu \n",h->array[0]);
-  //PRINT_HEAP(h);
-
-  //add A*N values
-  unsigned long long num;
-  for (int j=0;j<mid;j++){
-    bool able_to_add=true;
-    int l=0;
-    for(;able_to_add;l++){
-      num=price(stacks[j],initial_num+1+l);
-      if(num<PEEP_LARGEST(h)){
-        REMOVE_AND_INSERT(h,num);
-        //printf("%llu\n",num);
-        //PRINT_HEAP(h);
-      }
-      else{
-        able_to_add=false;
-      }
-    }
-    for(int m=0;m<=N;m++){
-      num=price(stacks[j],initial_num+1+l+m);
-      //printf("hi:%llu \n",num);
-      if(num<PEEP_LARGEST(h)){
-        REMOVE_AND_INSERT(h,num);
-        //PRINT_HEAP(h);
-      }
-    }
-  }
-  //check
-  //PRINT_HEAP(h);
-  //printf("%llu \n",h->array[0]);
-  
-  for (int j=mid;j<A;j++){
-    bool able_to_add=true;
-    int l=0;
-    for(;able_to_add;l++){
-      num=price(stacks[j],initial_num+l);
-      if(num<PEEP_LARGEST(h)){
-        REMOVE_AND_INSERT(h,num);
-        //PRINT_HEAP(h);
-      }
-      else{
-        able_to_add=false;
-      }
-    }
-    
-    for(int m=0;m<=N;m++){
-      num=price(stacks[j],initial_num+l+m);
-      //printf("hi:%llu \n",num);
-      if(num<PEEP_LARGEST(h)){
-        REMOVE_AND_INSERT(h,num);
-        //PRINT_HEAP(h);
-      }
-    }
+  for(int i=0;i<max_k;i++){
+    REMOVE_AND_INSERT_NODE(h,&array_k[i],stacks,A,A_pos);
   }
   
-  //check
-  //PRINT_HEAP(h);
-  //printf("%llu \n",h->array[0]);
-
-  //heapsort
-  HEAPSORT(h);
-
-  //check
-  //PRINT_HEAP(h);
   
   //solve question
   for(int i=0;i<Q;i++){
@@ -272,8 +315,8 @@ void Brain(){
       //短k條件
       if(k[i]==1){
         unsigned long long first_in_s=kth(s[i],1,N);
-        if(first_in_s>h->array[0]){
-          printf("%llu\n",h->array[0]);
+        if(first_in_s>array_k[0]){
+          printf("%llu\n",array_k[0]);
         }
         else{
           printf("%llu\n",first_in_s);
@@ -284,8 +327,8 @@ void Brain(){
         unsigned long long first_in_s;
         unsigned long long second_in_s;
         return_kth(s[i],1,N,&first_in_s,&second_in_s);
-        unsigned long long first_in_sort=h->array[0];
-        unsigned long long second_in_sort=h->array[1];
+        unsigned long long first_in_sort=array_k[0];
+        unsigned long long second_in_sort=array_k[1];
         unsigned long long second_small;
         unsigned long long first_large;
         if(second_in_s>second_in_sort){
@@ -312,21 +355,21 @@ void Brain(){
       }
 
       //邊界條件      
-      if(h->array[0]>=kth(s[i],k[i]-1,N)){
-        if(h->array[0]>=kth(s[i],k[i],N)){
+      if(array_k[0]>=kth(s[i],k[i]-1,N)){
+        if(array_k[0]>=kth(s[i],k[i],N)){
           printf("%llu\n",kth(s[i],k[i],N));
         }
         else{
-          printf("%llu\n",h->array[0]);
+          printf("%llu\n",array_k[0]);
         }
         continue;
       }
-      if(h->array[k[i]-2]<=kth(s[i],1,N)){
-        if(h->array[k[i]-1]>=kth(s[i],1,N)){
+      if(array_k[k[i]-2]<=kth(s[i],1,N)){
+        if(array_k[k[i]-1]>=kth(s[i],1,N)){
           printf("%llu\n",kth(s[i],1,N));
         }
         else{
-          printf("%llu\n",h->array[k[i]-1]);
+          printf("%llu\n",array_k[k[i]-1]);
         }
         continue; 
       }
@@ -335,8 +378,8 @@ void Brain(){
       int left_num=0;
       int right_num=k[i]-1;
       int mid=(left_num+right_num)/2;
-      unsigned long long sorted_m=h->array[mid];
-      unsigned long long sorted_m1=h->array[mid+1];
+      unsigned long long sorted_m=array_k[mid];
+      unsigned long long sorted_m1=array_k[mid+1];
       unsigned long long unsorted_k;//func
       unsigned long long unsorted_k1;//func
       return_kth(s[i],k[i]-mid-1,N,&unsorted_k,&unsorted_k1);
@@ -356,13 +399,13 @@ void Brain(){
           right_num=mid;
         }
         mid=(left_num+right_num)/2;
-        sorted_m=h->array[mid];
-        sorted_m1=h->array[mid+1];
+        sorted_m=array_k[mid];
+        sorted_m1=array_k[mid+1];
         return_kth(s[i],k[i]-mid-1,N,&unsorted_k,&unsorted_k1);
       }
     }
     else{
-      printf("%llu\n",h->array[k[i]-1]);
+      printf("%llu\n",array_k[k[i]-1]);
     }
   }
   free(h->array);
@@ -371,178 +414,162 @@ void Brain(){
   free(s);
   free(k);
 }
+
+
+
+
+
 
 int main(){
   Brain();
   return 0;
 }
-/*
-unsigned long long price(unsigned long long s,unsigned long long k){
-  return s+k;
-}
 
-
-*/
 
 /*
+
 void Brain(){
   
-  int A=3;
-  int Q=3;
-  int N=1000;
+  int A=1;
+  int Q=2;
+  int N=1;
   int *stacks = (int*) malloc(sizeof(int)*A);
   
   for(int i=0;i<A;i++){
-    stacks[i]=i+999999991;
+    stacks[i]=1;
   }
   
   int *s = (int*) malloc(sizeof(int)*Q);
   int *k = (int*) malloc(sizeof(int)*Q);
   s[0]=0;
-  s[1]=999999994;
-  s[2]=900000005;
-  k[0]=1000000;
+  s[1]=0;
+  k[0]=1;
   k[1]=1000000;
-  k[2]=123456;
   
   int max_k=0;
-  for(int i=0;i<Q;i++){
+  for(int i=0;i<Q;i++){//?
     if(k[i]>max_k){
       max_k=k[i];
     }
   }
-  
-  //get k values
-  HEAP* h=createHeap(max_k);
-  int mid=max_k%A;
-  int initial_num=max_k/A+1;
+  //get NA min heap
+  NODE_HEAP* h=createNodeHeap(N*A);
   int i=0;
-  for (int j=0;j<mid;j++){
-    for(int l=1;l<=initial_num;l++){
-      h->array[i]=price(stacks[j],l);
+  for (int j=0;j<A;j++){
+    for(int l=1;l<=N;l++){
+      h->array[i]=alloc(price(stacks[j],l),j);
       i++;
     }
   }
-  for (int j=mid;j<A;j++){
-    for(int l=1;l<initial_num;l++){
-      h->array[i]=price(stacks[j],l);
-      i++;
-    }
+  BUILD_MIN_HEAP(h);
+  //create array k & array A
+  unsigned long long *array_k=malloc(sizeof(unsigned long long)*max_k);
+  int *A_pos=malloc(sizeof(int)*A);
+  for(int i=0;i<A;i++){
+    A_pos[i]=N+1;
   }
-  //max heapify
-  BUILD_MAX_HEAP(h);
-  
-  //check
-  //printf("%llu \n",h->array[0]);
-  //PRINT_HEAP(h);
-
-  //add A*N values
-  unsigned long long num;
-  for (int j=0;j<mid;j++){
-    bool able_to_add=true;
-    int l=0;
-    for(;able_to_add;l++){
-      num=price(stacks[j],initial_num+1+l);
-      if(num<PEEP_LARGEST(h)){
-        REMOVE_AND_INSERT(h,num);
-        //printf("%llu\n",num);
-        //PRINT_HEAP(h);
-      }
-      else{
-        able_to_add=false;
-      }
-    }
-    for(int m=0;m<=N;m++){
-      num=price(stacks[j],initial_num+1+l+m);
-      //printf("hi:%llu \n",num);
-      if(num<PEEP_LARGEST(h)){
-        REMOVE_AND_INSERT(h,num);
-        //PRINT_HEAP(h);
-      }
-    }
-  }
-  //check
-  //PRINT_HEAP(h);
-  //printf("%llu \n",h->array[0]);
-  
-  for (int j=mid;j<A;j++){
-    bool able_to_add=true;
-    int l=0;
-    for(;able_to_add;l++){
-      num=price(stacks[j],initial_num+l);
-      if(num<PEEP_LARGEST(h)){
-        REMOVE_AND_INSERT(h,num);
-        //PRINT_HEAP(h);
-      }
-      else{
-        able_to_add=false;
-      }
-    }
-    
-    for(int m=0;m<=N;m++){
-      num=price(stacks[j],initial_num+l+m);
-      //printf("hi:%llu \n",num);
-      if(num<PEEP_LARGEST(h)){
-        REMOVE_AND_INSERT(h,num);
-        //PRINT_HEAP(h);
-      }
-    }
+  for(int i=0;i<max_k;i++){
+    REMOVE_AND_INSERT_NODE(h,&array_k[i],stacks,A,A_pos);
   }
   
-  //check
-  //PRINT_HEAP(h);
-  //printf("%llu \n",h->array[0]);
-
-  //heapsort
-  HEAPSORT(h);
-
-  //check
-  //PRINT_HEAP(h);
   
   //solve question
   for(int i=0;i<Q;i++){
     if(s[i]!=0){
-      HEAP* s_heap=createHeap(k[i]);
-      s_heap->size=0;
-      int j=0;
-      while(j<k[i]){
-        int num=price(s[i],j+1);
-        if(num<h->array[h->size-1]){
-          s_heap->array[j]=num;
-          s_heap->size++;
+      //短k條件
+      if(k[i]==1){
+        unsigned long long first_in_s=kth(s[i],1,N);
+        if(first_in_s>array_k[0]){
+          printf("%llu\n",array_k[0]);
         }
         else{
-          break;
+          printf("%llu\n",first_in_s);
         }
-        j++;
+        continue;
       }
-      for(int l=0;l<N+1 && j+l<k[i];l++){
-        int num=price(s[i],j+1+l);
-        if(num<h->array[h->size-1]){
-          s_heap->array[j+l]=num;
-          s_heap->size++;
-        }
-      }
-      
-      BUILD_MAX_HEAP(s_heap);
-      HEAPSORT(s_heap);
-      //PRINT_HEAP(s_heap);
-      j=k[i]-1;
-      int l=0;
-      while(j>=0 && l<s_heap->size){
-        if(h->array[j]>s_heap->array[l]){
-          j--;
-          l++;
+      else if(k[i]==2){
+        unsigned long long first_in_s;
+        unsigned long long second_in_s;
+        return_kth(s[i],1,N,&first_in_s,&second_in_s);
+        unsigned long long first_in_sort=array_k[0];
+        unsigned long long second_in_sort=array_k[1];
+        unsigned long long second_small;
+        unsigned long long first_large;
+        if(second_in_s>second_in_sort){
+          second_small=second_in_sort;
         }
         else{
+          second_small=second_in_s;
+        }
+
+        if(first_in_s>first_in_sort){
+          first_large=first_in_s;
+        }
+        else{
+          first_large=first_in_sort;
+        }
+
+        if(first_large<second_small){
+          printf("%llu\n",first_large);
+        }
+        else{
+          printf("%llu\n",second_small);
+        }
+        continue;
+      }
+
+      //邊界條件      
+      if(array_k[0]>=kth(s[i],k[i]-1,N)){
+        if(array_k[0]>=kth(s[i],k[i],N)){
+          printf("%llu\n",kth(s[i],k[i],N));
+        }
+        else{
+          printf("%llu\n",array_k[0]);
+        }
+        continue;
+      }
+      if(array_k[k[i]-2]<=kth(s[i],1,N)){
+        if(array_k[k[i]-1]>=kth(s[i],1,N)){
+          printf("%llu\n",kth(s[i],1,N));
+        }
+        else{
+          printf("%llu\n",array_k[k[i]-1]);
+        }
+        continue; 
+      }
+      
+      //binary search
+      int left_num=0;
+      int right_num=k[i]-1;
+      int mid=(left_num+right_num)/2;
+      unsigned long long sorted_m=array_k[mid];
+      unsigned long long sorted_m1=array_k[mid+1];
+      unsigned long long unsorted_k;//func
+      unsigned long long unsorted_k1;//func
+      return_kth(s[i],k[i]-mid-1,N,&unsorted_k,&unsorted_k1);
+      while(true){
+        if(unsorted_k<=sorted_m && sorted_m<=unsorted_k1){
+          printf("%llu\n",sorted_m);
           break;
         }
+        else if(sorted_m<=unsorted_k && unsorted_k<=sorted_m1){
+          printf("%llu\n",unsorted_k);
+          break;
+        }
+        else if(sorted_m<unsorted_k){
+          left_num=mid;
+        }
+        else{
+          right_num=mid;
+        }
+        mid=(left_num+right_num)/2;
+        sorted_m=array_k[mid];
+        sorted_m1=array_k[mid+1];
+        return_kth(s[i],k[i]-mid-1,N,&unsorted_k,&unsorted_k1);
       }
-      printf("%llu \n",h->array[j]);
-      
     }
     else{
-      printf("%llu \n",h->array[k[i]-1]);
+      printf("%llu\n",array_k[k[i]-1]);
     }
   }
   free(h->array);
@@ -550,5 +577,4 @@ void Brain(){
   free(stacks);
   free(s);
   free(k);
-}
-*/
+}*/
