@@ -4,8 +4,8 @@
 # include <stdbool.h>
 
 void Magic_Certificate(){
-    //char* str = malloc(10000000*sizeof(char));
-    char str[10000];
+    char* str = malloc(10000000*sizeof(char));
+    //char str[10000];
     scanf("%s",str);
     int length=strlen(str);
     int temp_length=length;
