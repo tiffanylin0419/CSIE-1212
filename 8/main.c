@@ -17,7 +17,7 @@ void Magic_Certificate(){
             }
         }
         if(run){
-            printf("%d\n",2*length-temp_length);
+            printf("%d\n",length-temp_length);
             for(int i=length;i>=temp_length;i--){
                 printf("%c",str[i]);
             }
