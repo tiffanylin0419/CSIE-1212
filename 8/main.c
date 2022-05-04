@@ -21,14 +21,10 @@ void Magic_Certificate(){
             for(int i=length;i>=temp_length;i--){
                 printf("%c",str[i]);
             }
-            printf("%s",str);
+            printf("%s\n",str);
             break;
         }
     }
-    
-
-
-
     
     free(str);
     return;
