@@ -7,7 +7,6 @@ typedef struct disjointSet{
     // TODO: Determine fields to use by your method
     int rank;
     int parent; 
-    char* str;
 } DisjointSet;
 
 DisjointSet ds[1 << 24];
@@ -29,35 +28,30 @@ int hash(const char* s) {
     return ret;
 }
 
-void makeset(const char* s){
+void makeset(int i){
     // TODO: Initialize a set with hash value
-    int i = hash(s);
     ds[i].parent=i;
     ds[i].rank=0;
-    ds[i].str = (char*)malloc(strlen(s)+1);
-    strcpy(ds[i].str,s);
 }
 
-inline void static init(const char* s) {
-    int i = hash(s);
+inline void static init(int i) {
     if (!set[i]) {
-        makeset(s);
+        makeset(i);
         set[i] = 1;
     }
 }
 
-int find_set(const char* s) {
-    init(s);
-    int i = hash(s);
+int find_set(int i) {
+    init(i);
     // TODO: Implement your find algorithm here
     if(ds[i].parent!=i){
-        ds[i].parent=find_set(ds[ds[i].parent].str);
+        ds[i].parent=find_set(ds[i].parent);
     }
-    return hash(ds[ds[i].parent].str);
+    return ds[i].parent;//?
 }
 
 void group(const char *ra, const char *rb) {
-    int a = find_set(ra), b = find_set(rb);
+    int a = find_set(hash(ra)), b = find_set(hash(rb));
     // TODO: Implement your union algorithm here
     if(ds[a].rank < ds[b].rank){
         ds[a].parent=b;
@@ -73,8 +67,8 @@ void group(const char *ra, const char *rb) {
 
 bool same_set(const char*a, const char* b) {
     // TODO: Implement your algorithm here
-    int aa=find_set(a);
-    int bb=find_set(b);
+    int aa=find_set(hash(a));
+    int bb=find_set(hash(b));
     if(aa==bb){
         return true;
     }
