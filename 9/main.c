@@ -60,13 +60,13 @@ void Magic2(){
         scanf("%s",strs[i]);
     }
     long long* RKP= malloc(k*sizeof(long long));
-    long long things=26;
+    long long things=126-33+1;
     long long q=LLONG_MAX/(things+1);
     //O(kl)
     for(int i=0;i<k;i++){
         RKP[i]=0;
         for(int j=0;j<l;j++){
-            RKP[i]=(things*RKP[i]+(long long)strs[i][j]-97)%q;
+            RKP[i]=(things*RKP[i]+(long long)strs[i][j]-33)%q;
         }
     }
 
@@ -105,10 +105,9 @@ void Magic2(){
     }
     //O(lklgk)
     long long* RKP_short= malloc(k*sizeof(long long));
-    
     for(int i=0;i<l;i++){
         for(int j=0;j<k;j++){
-            RKP_short[j]=(RKP[j]+q-num[i]*((long long)strs[j][i]-97))%q;
+            RKP_short[j]=(RKP[j]+q-num[i]*((long long)strs[j][i]-33))%q;
             sorted_position[j]=j;
         }
         //sort
@@ -126,10 +125,11 @@ void Magic2(){
                 kk++;
             }
         }
-        printf("No\n");
-        return;
+        
     }
-
+    printf("No\n");
+    return;
+    
     for(int i=0;i<k;i++){
         free(strs[i]);
     }
