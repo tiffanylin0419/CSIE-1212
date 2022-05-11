@@ -7,7 +7,7 @@ typedef struct disjointSet{
     // TODO: Determine fields to use by your method
     int rank;
     int parent; 
-    char* str;
+    char str[];
 } DisjointSet;
 
 DisjointSet ds[1 << 24];
@@ -34,25 +34,18 @@ void makeset(const char* s){
     int i = hash(s);
     ds[i].parent=i;
     ds[i].rank=0;
-    ds[i].str = (char*)malloc(strlen(s)+1);
+    //ds[i].str = (char*)malloc(strlen(s)+1);
     strcpy(ds[i].str,s);
 }
 
 inline void static init(const char* s) {
-    
     int i = hash(s);
     if (!set[i]) {
         makeset(s);
         set[i] = 1;
     }
-    /*
-    printf("%s ",s);
-    if(set[i]){
-        printf("true");
-    }
-    printf("\n");*/
 }
-//?
+
 int find_set(const char* s) {
     init(s);
     int i = hash(s);
@@ -95,14 +88,12 @@ int main() {
     char str[100];
     char person1[100];
     char person2[100];
-    
-    
     for(int i=0;i<num;i++){
         scanf("%s %s %s",str,person1,person2);
         if(strcmp(str,"group")==0){
             group(person1,person2);
         }
-        else if(strcmp(str,"test")==0){
+        else{
             if(same_set(person1,person2)){
                 printf("Positive\n");
             }
