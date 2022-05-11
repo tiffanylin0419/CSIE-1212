@@ -7,7 +7,7 @@ typedef struct disjointSet{
     // TODO: Determine fields to use by your method
     int rank;
     int parent; 
-    char str[];
+    char* str;
 } DisjointSet;
 
 DisjointSet ds[1 << 24];
@@ -34,7 +34,7 @@ void makeset(const char* s){
     int i = hash(s);
     ds[i].parent=i;
     ds[i].rank=0;
-    //ds[i].str = (char*)malloc(strlen(s)+1);
+    ds[i].str = (char*)malloc(strlen(s)+1);
     strcpy(ds[i].str,s);
 }
 
