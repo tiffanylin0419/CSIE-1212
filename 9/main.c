@@ -22,8 +22,8 @@ void merge(long long* arr,int* tag,int left,int mid,int right){
         Rtag[i]=tag[mid+i+1];
     }
     
-    L[lenL]=LONG_LONG_MAX;
-    R[lenR]=LONG_LONG_MAX;
+    L[lenL]=LLONG_MAX;
+    R[lenR]=LLONG_MAX;
     int j=0,k=0;
     for(int i=left;i<=right;i++){
         if(L[j]<R[k]){
@@ -61,7 +61,7 @@ void Magic2(){
     }
     long long* RKP= malloc(k*sizeof(long long));
     long long things=26;
-    long long q=LONG_LONG_MAX/(things+1);
+    long long q=LLONG_MAX/(things+1);
     //O(kl)
     for(int i=0;i<k;i++){
         RKP[i]=0;
