@@ -7,7 +7,7 @@ typedef struct disjointSet{
     // TODO: Determine fields to use by your method
     int rank;
     int parent; 
-    char str[100];
+    char str[];
 } DisjointSet;
 
 DisjointSet ds[1 << 24];
@@ -85,12 +85,12 @@ int main() {
     // TODO: Implement your algorithm here
     int num;
     scanf("%d",&num);
-    char str[100];
-    char person1[100];
-    char person2[100];
+    char str[10000];
+    char person1[10000];
+    char person2[10000];
     for(int i=0;i<num;i++){
         scanf("%s %s %s",str,person1,person2);
-        if(strcmp(str,"group")==0){
+        if(str[0]=='g'){
             group(person1,person2);
         }
         else{
