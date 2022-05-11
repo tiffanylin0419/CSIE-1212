@@ -4,28 +4,28 @@
 # include <stdbool.h>
 # include <limits.h>
 
-void merge(long long* arr,int* tag,int left,int mid,int right){
+void merge(long long* arr,long long* tag,long long left,long long mid,long long right){
     //char** strs = malloc(k*sizeof(char*));
     long long lenL=mid-left+1;
     long long lenR=right-mid;
     long long* L= malloc((lenL+1)*sizeof(long long));
     long long* R= malloc((lenR+1)*sizeof(long long));
-    int* Ltag= malloc((lenL)*sizeof(int));
-    int* Rtag= malloc((lenR)*sizeof(int));
+    long long* Ltag= malloc((lenL)*sizeof(long long));
+    long long* Rtag= malloc((lenR)*sizeof(long long));
 
-    for(int i=0;i<lenL;i++){
+    for(long long i=0;i<lenL;i++){
         L[i]=arr[left+i];
         Ltag[i]=tag[left+i];
     }
-    for(int i=0;i<lenR;i++){
+    for(long long i=0;i<lenR;i++){
         R[i]=arr[mid+i+1];
         Rtag[i]=tag[mid+i+1];
     }
     
     L[lenL]=LLONG_MAX;
     R[lenR]=LLONG_MAX;
-    int j=0,k=0;
-    for(int i=left;i<=right;i++){
+    long long j=0,k=0;
+    for(long long i=left;i<=right;i++){
         if(L[j]<R[k]){
             arr[i]=L[j];
             tag[i]=Ltag[j];
@@ -42,9 +42,9 @@ void merge(long long* arr,int* tag,int left,int mid,int right){
     free(Ltag);
     free(Rtag);
 }
-void merge_sort(long long* arr,int* tag,int left,int right){
+void merge_sort(long long* arr,long long* tag,long long left,long long right){
     if (left<right){
-        int mid=(left+right)/2;
+        long long mid=(left+right)/2;
         merge_sort(arr,tag,left,mid);
         merge_sort(arr,tag,mid+1,right);
         merge(arr,tag,left,mid,right);
@@ -52,10 +52,10 @@ void merge_sort(long long* arr,int* tag,int left,int right){
 }
 
 void Magic2(){
-    int k,l,flag;
-    scanf("%d %d %d",&k,&l,&flag);
+    long long k,l,flag;
+    scanf("%lld %lld %lld",&k,&l,&flag);
     char** strs = malloc(k*sizeof(char*));
-    for(int i=0;i<k;i++){
+    for(long long i=0;i<k;i++){
         strs[i]=malloc(l*sizeof(char));
         scanf("%s",strs[i]);
     }
@@ -63,32 +63,32 @@ void Magic2(){
     long long things=126-33+1;
     long long q=LLONG_MAX/(things+1);
     //O(kl)
-    for(int i=0;i<k;i++){
+    for(long long i=0;i<k;i++){
         RKP[i]=0;
-        for(int j=0;j<l;j++){
+        for(long long j=0;j<l;j++){
             RKP[i]=(things*RKP[i]+(long long)strs[i][j]-33)%q;
         }
     }
 
     //存成一行k個值，sort，任2相等就檢查是不是是答案
-    int* sorted_position= malloc(k*sizeof(int));
+    long long* sorted_position= malloc(k*sizeof(long long));
     //長度=1
     if(k==1){
         printf("No\n");
         return;
     }
     if(l==1){
-        for(int j=0;j<k;j++){
+        for(long long j=0;j<k;j++){
             sorted_position[j]=j;
         }
         merge_sort(RKP,sorted_position,0,k-1);
-        int kk;
-        for(int j=0;j<k;j++){
+        long long kk;
+        for(long long j=0;j<k;j++){
             kk=j+1;
-            //printf("%d %d,%lld %lld\n",j,kk,RKP_short[j],RKP_short[kk]);
+            //printf("%lld %lld,%lld %lld\n",j,kk,RKP_short[j],RKP_short[kk]);
             while(RKP[j]==RKP[kk] && kk<k){
                 printf("Yes\n");
-                printf("%d %d\n",sorted_position[j],sorted_position[kk]);
+                printf("%lld %lld\n",sorted_position[j],sorted_position[kk]);
                 return;
                 kk++;
             }
@@ -98,28 +98,28 @@ void Magic2(){
     }   
 
     //O(l)
-    int* num= malloc(l*sizeof(int));
+    long long* num= malloc(l*sizeof(long long));
     num[l-1]=1;
-    for(int i=1;i<l;i++){
+    for(long long i=1;i<l;i++){
         num[l-1-i]=num[l-i]*things%q;
     }
     //O(lklgk)
     long long* RKP_short= malloc(k*sizeof(long long));
-    for(int i=0;i<l;i++){
-        for(int j=0;j<k;j++){
+    for(long long i=0;i<l;i++){
+        for(long long j=0;j<k;j++){
             RKP_short[j]=(RKP[j]+q-num[i]*((long long)strs[j][i]-33))%q;
             sorted_position[j]=j;
         }
         //sort
         
         merge_sort(RKP_short,sorted_position,0,k-1);
-        int kk;
-        for(int j=0;j<k;j++){
+        long long kk;
+        for(long long j=0;j<k;j++){
             kk=j+1;
-            //printf("%d %d,%lld %lld\n",j,kk,RKP_short[j],RKP_short[kk]);
+            //printf("%lld %lld,%lld %lld\n",j,kk,RKP_short[j],RKP_short[kk]);
             while(RKP_short[j]==RKP_short[kk] && kk<k){
                 printf("Yes\n");
-                printf("%d %d\n",sorted_position[j],sorted_position[kk]);
+                printf("%lld %lld\n",sorted_position[j],sorted_position[kk]);
 
                 return;
                 kk++;
@@ -128,9 +128,7 @@ void Magic2(){
         
     }
     printf("No\n");
-    return;
-    
-    for(int i=0;i<k;i++){
+    for(long long i=0;i<k;i++){
         free(strs[i]);
     }
     free(strs);
