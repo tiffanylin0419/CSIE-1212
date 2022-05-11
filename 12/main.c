@@ -7,7 +7,7 @@ typedef struct disjointSet{
     // TODO: Determine fields to use by your method
     int rank;
     int parent; 
-    char str[];
+    char str[100];
 } DisjointSet;
 
 DisjointSet ds[1 << 24];
