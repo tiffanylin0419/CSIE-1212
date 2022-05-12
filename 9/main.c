@@ -81,7 +81,7 @@ void Magic2(){
     }
     long long* RKP= malloc(k*sizeof(long long));
     long long things=126-33+1;
-    long long q=LLONG_MAX/(things+2);
+    long long q=LLONG_MAX/(things+2)-1;
     //calculate RKP
     //O(kl)
     hash(RKP, strs,k,l,things, q);
