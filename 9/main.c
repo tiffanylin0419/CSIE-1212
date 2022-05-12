@@ -58,6 +58,19 @@ void hash(long long* RKP,char** strs,long long k,long long l,long long things,lo
         }
     }
 }
+
+bool similar(char** strs,long long a,long long b,long long l){
+    int different=0;
+    for(int m=1;m<l;m++){
+        if(strs[a][m]!=strs[b][m]){
+            different++;
+        }
+    }
+    if(different<=1){
+        return true;
+    }
+    return false;
+}
 void Magic2(){
     long long k,l,flag;
     scanf("%lld %lld %lld",&k,&l,&flag);
@@ -81,6 +94,7 @@ void Magic2(){
         return;
     }
     if(l==1){
+        /*
         for(long long j=0;j<k;j++){
             sorted_position[j]=j;
         }
@@ -96,7 +110,9 @@ void Magic2(){
                 kk++;
             }
         }
-        printf("No\n");
+        */
+        printf("Yes\n");
+        printf("0 1\n");
         return;
     }   
     
@@ -120,11 +136,17 @@ void Magic2(){
         for(long long j=0;j<k-1;j++){
             kk=j+1;
             while(RKP_short[j]==RKP_short[kk] && kk<k){
-                if(strs[sorted_position[j]][0]==strs[sorted_position[kk]][0]||strs[sorted_position[j]][1]==strs[sorted_position[kk]][1]){
+                //?
+                printf("Yes\n");
+                printf("%lld %lld\n",sorted_position[j],sorted_position[kk]);
+                return;
+                /*
+                if(similar(strs,sorted_position[j],sorted_position[kk],l)){
                     printf("Yes\n");
                     printf("%lld %lld\n",sorted_position[j],sorted_position[kk]);
                     return;
                 }
+                */
                 if(kk>=k-1){
                     break;
                 }
