@@ -50,13 +50,11 @@ void merge_sort(long long* arr,long long* tag,long long left,long long right){
         merge(arr,tag,left,mid,right);
     }
 }
-void hash(long long* RKP,long long* sum,char** strs,long long k,long long l,long long things,long long q){
+void hash(long long* RKP,char** strs,long long k,long long l,long long things,long long q){
     for(long long i=0;i<k;i++){
         RKP[i]=0;
-        sum[i]=0;
         for(long long j=0;j<l;j++){
             RKP[i]=(things*RKP[i]+(long long)strs[i][j]-33)%q;
-            sum[i]+=(long long)strs[i][j]-33;
         }
     }
 }
@@ -69,11 +67,11 @@ void Magic2(){
         scanf("%s",strs[i]);
     }
     long long* RKP= malloc(k*sizeof(long long));
-    long long* sum= malloc(k*sizeof(long long));
     long long things=126-33+1;
     long long q=LLONG_MAX/(things+2);
     //calculate RKP
-    hash(RKP, sum,strs,k,l,things, q);
+    //O(kl)
+    hash(RKP, strs,k,l,things, q);
     
     //存成一行k個值，sort，任2相等就檢查是不是是答案
     long long* sorted_position= malloc(k*sizeof(long long));
@@ -82,73 +80,16 @@ void Magic2(){
         printf("No\n");
         return;
     }
-
-    if(flag==0){
-        //長度=1
-        if(l==1){
-            //same
-            for(long long j=0;j<k;j++){
-                sorted_position[j]=j;
-            }
-            merge_sort(RKP,sorted_position,0,k-1);
-            long long kk;
-            for(long long j=0;j<k-1;j++){
-                kk=j+1;
-                //printf("%lld %lld,%lld %lld\n",j,kk,RKP_short[j],RKP_short[kk]);
-                while((RKP[j]==RKP[kk] && kk<k)&& sum[sorted_position[j]]==sum[sorted_position[kk]]){
-                    printf("Yes\n");
-                    printf("%lld %lld\n",sorted_position[j],sorted_position[kk]);
-                    return;
-                    kk++;
-                }
-            }
-            printf("No\n");
-            return;
-        }
-        //O(l)
-        long long* num= malloc(l*sizeof(long long));
-        num[l-1]=1;
-        for(long long i=1;i<l;i++){
-            num[l-1-i]=num[l-i]*things%q;
-        }
-        
-        //O(lklgk)
-        long long* RKP_short= malloc(k*sizeof(long long));
-        long long* sum_short= malloc(k*sizeof(long long));
-        for(long long i=0;i<l;i++){
-            for(long long j=0;j<k;j++){
-                sum_short[j]=RKP[j]-((long long)strs[j][i]-33);
-                RKP_short[j]=(RKP[j]+q-num[i]*((long long)strs[j][i]-33))%q;
-                sorted_position[j]=j;
-            }
-            //sort
-            merge_sort(RKP_short,sorted_position,0,k-1);
-            long long kk;
-            for(long long j=0;j<k-1;j++){
-                kk=j+1;
-                while((RKP_short[j]==RKP_short[kk] && kk<k)&&sum_short[sorted_position[j]]==sum_short[sorted_position[kk]]){
-                    printf("Yes\n");
-                    printf("%lld %lld\n",sorted_position[j],sorted_position[kk]);
-                    return;
-                    if(kk>=k-1){
-                        break;
-                    }
-                    kk++;
-                }
-            }
-            
-        }
-
-        //same
+    if(l==1){
         for(long long j=0;j<k;j++){
             sorted_position[j]=j;
         }
         merge_sort(RKP,sorted_position,0,k-1);
         long long kk;
-        for(long long j=0;j<k-1;j++){
+        for(long long j=0;j<k;j++){
             kk=j+1;
             //printf("%lld %lld,%lld %lld\n",j,kk,RKP_short[j],RKP_short[kk]);
-            while((RKP[j]==RKP[kk] && kk<k)&& sum[sorted_position[j]]==sum[sorted_position[kk]]){
+            while(RKP[j]==RKP[kk] && kk<k){
                 printf("Yes\n");
                 printf("%lld %lld\n",sorted_position[j],sorted_position[kk]);
                 return;
@@ -156,20 +97,53 @@ void Magic2(){
             }
         }
         printf("No\n");
-        free(RKP_short);
-        free(sum_short);
-        free(num);
+        return;
+    }   
+    
+    //O(l)
+    long long* num= malloc(l*sizeof(long long));
+    num[l-1]=1;
+    for(long long i=1;i<l;i++){
+        num[l-1-i]=num[l-i]*things%q;
     }
-
-    //else
-
+    
+    //O(lklgk)//?
+    long long* RKP_short= malloc(k*sizeof(long long));
+    for(long long i=0;i<l;i++){
+        for(long long j=0;j<k;j++){
+            RKP_short[j]=(RKP[j]+q-num[i]*((long long)strs[j][i]-33))%q;
+            sorted_position[j]=j;
+        }
+        //sort
+        merge_sort(RKP_short,sorted_position,0,k-1);
+        long long kk;
+        for(long long j=0;j<k-1;j++){
+            kk=j+1;
+            while(RKP_short[j]==RKP_short[kk] && kk<k){
+                if(strs[sorted_position[j]][0]==strs[sorted_position[kk]][0]||strs[sorted_position[j]][1]==strs[sorted_position[kk]][1]){
+                    printf("Yes\n");
+                    printf("%lld %lld\n",sorted_position[j],sorted_position[kk]);
+                    return;
+                }
+                if(kk>=k-1){
+                    break;
+                }
+                kk++;
+            }
+        }
+        
+    }
+    printf("No\n");
+    
     for(long long i=0;i<k;i++){
         free(strs[i]);
     }
     free(strs);
     free(RKP);
-    free(sum);
+    free(num);
+    free(RKP_short);
     free(sorted_position);
+    
 }
 
 int main(){
