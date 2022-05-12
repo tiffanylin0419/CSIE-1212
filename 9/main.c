@@ -56,12 +56,12 @@ void Magic2(){
     scanf("%lld %lld %lld",&k,&l,&flag);
     char** strs = malloc(k*sizeof(char*));
     for(long long i=0;i<k;i++){
-        strs[i]=malloc(l*sizeof(char));
+        strs[i]=malloc((l+1)*sizeof(char));
         scanf("%s",strs[i]);
     }
     long long* RKP= malloc(k*sizeof(long long));
     long long things=126-33+1;
-    long long q=LLONG_MAX/(things+1);
+    long long q=LLONG_MAX/(things+2);
     //O(kl)
     for(long long i=0;i<k;i++){
         RKP[i]=0;
@@ -69,7 +69,7 @@ void Magic2(){
             RKP[i]=(things*RKP[i]+(long long)strs[i][j]-33)%q;
         }
     }
-
+    
     //存成一行k個值，sort，任2相等就檢查是不是是答案
     long long* sorted_position= malloc(k*sizeof(long long));
     //長度=1
@@ -96,14 +96,15 @@ void Magic2(){
         printf("No\n");
         return;
     }   
-
+    
     //O(l)
     long long* num= malloc(l*sizeof(long long));
     num[l-1]=1;
     for(long long i=1;i<l;i++){
         num[l-1-i]=num[l-i]*things%q;
     }
-    //O(lklgk)
+    
+    //O(lklgk)//?
     long long* RKP_short= malloc(k*sizeof(long long));
     for(long long i=0;i<l;i++){
         for(long long j=0;j<k;j++){
@@ -113,21 +114,24 @@ void Magic2(){
         //sort
         
         merge_sort(RKP_short,sorted_position,0,k-1);
+        
         long long kk;
-        for(long long j=0;j<k;j++){
+        for(long long j=0;j<k-1;j++){
             kk=j+1;
-            //printf("%lld %lld,%lld %lld\n",j,kk,RKP_short[j],RKP_short[kk]);
             while(RKP_short[j]==RKP_short[kk] && kk<k){
                 printf("Yes\n");
                 printf("%lld %lld\n",sorted_position[j],sorted_position[kk]);
-
                 return;
+                if(kk>=k-1){
+                    break;
+                }
                 kk++;
             }
         }
         
     }
     printf("No\n");
+    
     for(long long i=0;i<k;i++){
         free(strs[i]);
     }
@@ -136,6 +140,7 @@ void Magic2(){
     free(num);
     free(RKP_short);
     free(sorted_position);
+    
 }
 
 int main(){
