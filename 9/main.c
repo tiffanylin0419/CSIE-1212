@@ -164,7 +164,6 @@ void Magic2(){
             }
             
         }
-        printf("%d\n",count);
         //算全部的
         
         for(long long j=0;j<k;j++){
