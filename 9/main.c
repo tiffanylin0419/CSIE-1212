@@ -70,7 +70,7 @@ void Magic2(){
     }
     long long* RKP= malloc(k*sizeof(long long));
     long long things=126-33+1;
-    long long q=LLONG_MAX/(things+2);
+    long long q=LLONG_MAX/(things+2)-1;
     //calculate RKP
     //O(kl)
     hash(RKP, strs,k,l,things, q);
@@ -101,7 +101,7 @@ void Magic2(){
         //O(lklgk)
         for(long long i=0;i<l;i++){
             for(long long j=0;j<k;j++){
-                RKP_short[j]=(RKP[j]+q-(num[i]*((long long)strs[j][i])%q-33))%q;
+                RKP_short[j]=(RKP[j]+q-(num[i]*((long long)strs[j][i]-33))%q)%q;
                 sorted_position[j]=j;
             }
             //sort
@@ -146,7 +146,7 @@ void Magic2(){
         //O(lklgk)
         for(long long i=0;i<l;i++){
             for(long long j=0;j<k;j++){
-                RKP_short[j]=(RKP[j]+q-(num[i]*((long long)strs[j][i])%q-33))%q;
+                RKP_short[j]=(RKP[j]+q-(num[i]*((long long)strs[j][i]-33))%q)%q;
                 sorted_position[j]=j;
             }
             //sort
