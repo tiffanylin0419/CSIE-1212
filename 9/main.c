@@ -172,19 +172,19 @@ void Magic2(){
         }
         
         //算全部的
-        
         for(long long j=0;j<k;j++){
             sorted_position[j]=j;
         }
         merge_sort(RKP,sorted_position,0,k-1);
         long long kk;
-        for(long long j=0;j<k;j++){
+        for(long long j=0;j<k-1;j++){
             kk=j+1;
             small_count=0;
             //printf("%lld %lld,%lld %lld\n",j,kk,RKP_short[j],RKP_short[kk]);
             while(RKP[j]==RKP[kk] && kk<k){
                 small_count++;
                 if(kk>=k-1){
+                    kk++;
                     break;
                 }
                 kk++;
