@@ -70,7 +70,7 @@ void Magic2(){
     }
     long long* RKP= malloc(k*sizeof(long long));
     long long things=126-33+1;
-    long long q=LLONG_MAX/(things)+1;
+    long long q=LLONG_MAX/(things+2)-1;
     //calculate RKP
     //O(kl)
     hash(RKP, strs,k,l,things, q);
@@ -137,6 +137,7 @@ void Magic2(){
         }
         
         int count=0;
+        int small_count=0;
         //O(l)
         num[l-1]=1;
         for(long long i=1;i<l;i++){
@@ -154,16 +155,22 @@ void Magic2(){
             long long kk;
             for(long long j=0;j<k-1;j++){
                 kk=j+1;
+                small_count=0;
                 while(RKP_short[j]==RKP_short[kk] && kk<k){
-                    count++;
+                    small_count++;
                     if(kk>=k-1){
                         break;
                     }
                     kk++;
                 }
+                j=kk;
+                if(small_count!=0){
+                    count+=(small_count+1)*small_count/2;
+                }
             }
             
         }
+        
         //算全部的
         
         for(long long j=0;j<k;j++){
@@ -173,13 +180,18 @@ void Magic2(){
         long long kk;
         for(long long j=0;j<k;j++){
             kk=j+1;
+            small_count=0;
             //printf("%lld %lld,%lld %lld\n",j,kk,RKP_short[j],RKP_short[kk]);
             while(RKP[j]==RKP[kk] && kk<k){
-                count-=l-1;
+                small_count++;
                 if(kk>=k-1){
                     break;
                 }
                 kk++;
+            }
+            j=kk;
+            if(small_count!=0){
+                count-=(l-1)*(small_count+1)*small_count/2;
             }
         }
         
