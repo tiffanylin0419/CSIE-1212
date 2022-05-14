@@ -136,8 +136,7 @@ void Magic2(){
             return;
         }
         
-        int count=0;
-        int small_count=0;
+        long long count=0;
         //O(l)
         num[l-1]=1;
         for(long long i=1;i<l;i++){
@@ -152,23 +151,25 @@ void Magic2(){
             }
             //sort
             merge_sort(RKP_short,sorted_position,0,k-1);
-            long long kk;
-            for(long long j=0;j<k-1;j++){
-                kk=j+1;
-                small_count=0;
-                while(RKP_short[j]==RKP_short[kk] && kk<k){
-                    small_count++;
-                    if(kk>=k-1){
-                        break;
-                    }
-                    kk++;
+
+            long long back=1;
+            for(long long front=0;front<k-1;){
+                if(RKP_short[front]!=RKP_short[back]&&back<k-1){
+                    count+=(back-front)*(back-front-1)/2;
+                    front=back;
                 }
-                j=kk-1;
-                if(small_count!=0){
-                    count+=(small_count+1)*small_count/2;
+                else if(RKP_short[front]!=RKP_short[back]&&back>=k-1){
+                    count+=(back-front)*(back-front-1)/2;
+                    break;
+                }
+                else if(back>=k-1){
+                    count+=(back-front+1)*(back-front)/2;
+                    break;
+                }
+                else{
+                    back++;
                 }
             }
-            
         }
         
         //算全部的
@@ -176,33 +177,33 @@ void Magic2(){
             sorted_position[j]=j;
         }
         merge_sort(RKP,sorted_position,0,k-1);
-        long long kk;
-        for(long long j=0;j<k-1;j++){
-            kk=j+1;
-            small_count=0;
-            //printf("%lld %lld,%lld %lld\n",j,kk,RKP_short[j],RKP_short[kk]);
-            while(RKP[j]==RKP[kk] && kk<k){
-                small_count++;
-                if(kk>=k-1){
-                    kk++;
-                    break;
-                }
-                kk++;
+        
+        long long back=1;
+        for(long long front=0;front<k-1;){
+            if(RKP_short[front]!=RKP_short[back]&&back<k-1){
+                count-=(l-1)*(back-front)*(back-front-1)/2;
+                front=back;
             }
-            j=kk-1;
-            if(small_count!=0){
-                count-=(l-1)*(small_count+1)*small_count/2;
+            else if(RKP_short[front]!=RKP_short[back]&&back>=k-1){
+                count-=(l-1)*(back-front)*(back-front-1)/2;
+                break;
+            }
+            else if(back>=k-1){
+                count-=(l-1)*(back-front+1)*(back-front)/2;
+                break;
+            }
+            else{
+                back++;
             }
         }
         
-    
         if(count==0){
             printf("No\n");
             printf("0\n");
         }  
         else{
             printf("Yes\n");
-            printf("%d\n",count);
+            printf("%lld\n",count);
         }
 
     }
