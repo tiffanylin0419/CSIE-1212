@@ -101,7 +101,7 @@ void Magic2(){
         //O(lklgk)
         for(long long i=0;i<l;i++){
             for(long long j=0;j<k;j++){
-                RKP_short[j]=(RKP[j]+q-num[i]*((long long)strs[j][i]-33))%q;
+                RKP_short[j]=(RKP[j]+q-(num[i]*((long long)strs[j][i])%q-33))%q;
                 sorted_position[j]=j;
             }
             //sort
@@ -163,7 +163,7 @@ void Magic2(){
                     }
                     kk++;
                 }
-                j=kk;
+                j=kk-1;
                 if(small_count!=0){
                     count+=(small_count+1)*small_count/2;
                 }
@@ -189,7 +189,7 @@ void Magic2(){
                 }
                 kk++;
             }
-            j=kk;
+            j=kk-1;
             if(small_count!=0){
                 count-=(l-1)*(small_count+1)*small_count/2;
             }
