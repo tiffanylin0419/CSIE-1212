@@ -101,7 +101,7 @@ void Magic2(){
         //O(lklgk)
         for(long long i=0;i<l;i++){
             for(long long j=0;j<k;j++){
-                RKP_short[j]=(RKP[j]+q-(num[i]*((long long)strs[j][i])%q-33))%q;
+                RKP_short[j]=(RKP[j]+q-num[i]*((long long)strs[j][i]-33))%q;
                 sorted_position[j]=j;
             }
             //sort
@@ -127,7 +127,7 @@ void Magic2(){
         //長度=1
         if(k==1){
             printf("No\n");
-            //printf("0\n");
+            printf("0\n");
             return;
         }
         if(l==1){
@@ -198,7 +198,7 @@ void Magic2(){
     
         if(count==0){
             printf("No\n");
-            //printf("0\n");
+            printf("0\n");
         }  
         else{
             printf("Yes\n");
