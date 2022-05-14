@@ -152,11 +152,12 @@ void Magic2(){
             //sort
             merge_sort(RKP_short,sorted_position,0,k-1);
 
-            long long back=1;
-            for(long long front=0;front<k-1;){
+
+            for(long long front=0,back=1;front<k-1;){
                 if(RKP_short[front]!=RKP_short[back]&&back<k-1){
                     count+=(back-front)*(back-front-1)/2;
                     front=back;
+                    back++;
                 }
                 else if(RKP_short[front]!=RKP_short[back]&&back>=k-1){
                     count+=(back-front)*(back-front-1)/2;
@@ -178,13 +179,13 @@ void Magic2(){
         }
         merge_sort(RKP,sorted_position,0,k-1);
         
-        long long back=1;
-        for(long long front=0;front<k-1;){
-            if(RKP_short[front]!=RKP_short[back]&&back<k-1){
+        for(long long front=0,back=1;front<k-1;){
+            if(RKP[front]!=RKP[back]&&back<k-1){
                 count-=(l-1)*(back-front)*(back-front-1)/2;
                 front=back;
+                back++;
             }
-            else if(RKP_short[front]!=RKP_short[back]&&back>=k-1){
+            else if(RKP[front]!=RKP[back]&&back>=k-1){
                 count-=(l-1)*(back-front)*(back-front-1)/2;
                 break;
             }
