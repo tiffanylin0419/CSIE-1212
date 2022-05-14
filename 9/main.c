@@ -127,7 +127,7 @@ void Magic2(){
         //長度=1
         if(k==1){
             printf("No\n");
-            printf("0\n");
+            //printf("0\n");
             return;
         }
         if(l==1){
@@ -198,7 +198,7 @@ void Magic2(){
     
         if(count==0){
             printf("No\n");
-            printf("0\n");
+            //printf("0\n");
         }  
         else{
             printf("Yes\n");
