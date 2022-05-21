@@ -9,10 +9,8 @@ typedef struct disjointSet{
     int parent; 
 } DisjointSet;
 
-//DisjointSet ds[1000000];
-
 void makeset(int N,DisjointSet* ds){
-    // TODO: Initialize a set with hash value
+    // TODO: Initialize a set
     for(int i=0;i<N;i++){
         ds[i].parent=i;
         ds[i].rank=0;
@@ -21,7 +19,6 @@ void makeset(int N,DisjointSet* ds){
 }
 
 int find_set(int i,DisjointSet* ds) {
-    // TODO: Implement your find algorithm here
     if(ds[i].parent!=i){
         ds[i].parent=find_set(ds[i].parent,ds);
     }
@@ -31,7 +28,6 @@ int find_set(int i,DisjointSet* ds) {
 void group(int a, int b,DisjointSet* ds) {
     a=find_set(a,ds);
     b=find_set(b,ds);
-    // TODO: Implement your union algorithm here
     if(ds[a].rank < ds[b].rank){
         ds[a].parent=b;
     }
@@ -45,7 +41,6 @@ void group(int a, int b,DisjointSet* ds) {
 }
 
 bool same_set(int a,int b,DisjointSet* ds) {
-    // TODO: Implement your algorithm here
     int aa=find_set(a,ds);
     int bb=find_set(b,ds);
     if(aa==bb){
@@ -56,14 +51,12 @@ bool same_set(int a,int b,DisjointSet* ds) {
 
 int command[1000000][3]={};
 int main() {
-    // TODO: Implement your algorithm here
     int N,M;
     scanf("%d %d",&N,&M);
-
-    DisjointSet* ds= malloc(N*sizeof(DisjointSet));
+    int ds_size=N*sizeof(DisjointSet);
+    DisjointSet* ds= malloc(ds_size);
     makeset(N,ds);
     
-
     char str[10000];
     int person1;
     int person2;
@@ -82,7 +75,37 @@ int main() {
             scanf("%d",&command[i][1]);
         }
     }
+
+    //算boom數量
+    int* boom=malloc(M*sizeof(int));
     for(int i=0;i<M;i++){
+        boom[i]=0;
+    }
+    for(int i=0;i<M;i++){
+        //query0, merge1, boom2
+        if(command[i][0]==2){
+            boom[command[i][1]]=1;
+        }
+    }
+
+    //製作儲存boom日子的ds
+    DisjointSet** ds_day= malloc(M*sizeof(DisjointSet*));
+    for(int i=0;i<M;i++){
+        ds_day[i]=malloc(ds_size);
+    }
+
+    //執行每天動作
+    for(int i=0;i<M;i++){
+        //存日後boom
+        if(boom[i]){
+            memcpy(ds_day[i],ds,ds_size);
+            boom[i]=N;
+            /*printf("%d:",i);
+            for(int j=0;j<N;j++){
+                printf("%d %d  ",j,ds[j].parent);
+            }
+            printf("\n");*/
+        }
         //query0, merge1, boom2
         if(command[i][0]==0){
             printf("%d\n",N);
@@ -94,8 +117,14 @@ int main() {
             }
         }
         else{
-            //command[i][1]
+            memcpy(ds,ds_day[command[i][1]],ds_size);
+            N=boom[command[i][1]];
         }
     }
     
+    free(ds);
+    for(int i=0;i<M;i++){
+        free(ds_day[i]);
+    }
+    free(ds_day);
 }
