@@ -60,11 +60,17 @@ bool same_set(int a,int b) {
 
 int command[1000000][3]={};
 int main() {
-    //input
+    // TODO: Implement your algorithm here
     int N,M;
     scanf("%d %d",&N,&M);
     int ds_size=N*sizeof(DisjointSet);
+    for(int i=0;i<N;i++){
+        makeset(i);
+    }
+
     char str[10];
+    int person1;
+    int person2;
     for(int i=0;i<M;i++){
         //query0, merge1, boom2
         scanf("%s",str);
@@ -80,9 +86,8 @@ int main() {
             scanf("%d",&command[i][1]);
         }
     }
-    
+
     //算boom數量
-    bool boom_exist_some=false;
     int* boom=malloc(M*sizeof(int));
     for(int i=0;i<M;i++){
         boom[i]=0;
@@ -91,52 +96,38 @@ int main() {
         //query0, merge1, boom2
         if(command[i][0]==2){
             boom[command[i][1]]=1;
-            boom_exist_some=true;
         }
     }
+
     //製作儲存boom日子的ds
     DisjointSet** ds_day= malloc(M*sizeof(DisjointSet*));
     for(int i=0;i<M;i++){
         ds_day[i]=malloc(ds_size);
     }
 
-    if(boom_exist_some){
-        //執行每天動作
-        for(int i=0;i<M;i++){
-            //存日後boom
-            if(boom[i]){
-                memcpy(ds_day[i],ds,ds_size);
-                boom[i]=N;
-            }
-            //query0, merge1, boom2
-            if(command[i][0]==0){
-                printf("%d\n",N);
-            }
-            else if(command[i][0]==1){
-                if(!same_set(command[i][1],command[i][2])){
-                    N--;
-                    group(command[i][1],command[i][2]);
-                }
-            }
-            else{
-                memcpy(ds,ds_day[command[i][1]],ds_size);
-                N=boom[command[i][1]];
+    
+    
+    //執行每天動作
+    for(int i=0;i<M;i++){
+        //存日後boom
+        if(boom[i]){
+            memcpy(ds_day[i],ds,ds_size);
+            boom[i]=N;
+        }
+        //query0, merge1, boom2
+        if(command[i][0]==0){
+            printf("%d\n",N);
+        }
+        else if(command[i][0]==1){
+            if(!same_set(command[i][1],command[i][2])){
+                N--;
+                group(command[i][1],command[i][2]);
             }
         }
-    }
-    else{
-        //執行每天動作
-        for(int i=0;i<M;i++){
-            //query0, merge1, boom2
-            if(command[i][0]==0){
-                printf("%d\n",N);
-            }
-            else if(command[i][0]==1){
-                if(!same_set(command[i][1],command[i][2])){
-                    N--;
-                    group(command[i][1],command[i][2]);
-                }
-            }
+        else{
+            memcpy(ds,ds_day[command[i][1]],ds_size);
+            N=boom[command[i][1]];
         }
     }
+    
 }
