@@ -85,69 +85,69 @@ int main() {
     
     //存boom資訊
     bool* boom_exist=malloc(M*sizeof(bool));
-    bool boom_exist_some=false;
     for(int i=0;i<M;i++){
         boom_exist[i]=0;
     }
     for(int i=0;i<M;i++){
         if(command[i][0]==2){
             boom_exist[command[i][1]]=1;
-            boom_exist_some=true;
         }
     }
-
-    if(boom_exist_some){
-        //boom N
-        int* N_boom=malloc(M*sizeof(int));
-        for(int i=0;i<M;i++){
-            N_boom[i]=0;
-        }
-        //boom ds
-        DisjointSet** ds_day= malloc(M*sizeof(DisjointSet*));
-        for(int i=0;i<M;i++){
-            ds_day[i]=malloc(ds_size);
-        }
-
-        //執行每天動作
-        for(int i=0;i<M;i++){
-            //存日後boom
-            if(boom_exist[i]){
-                memcpy(ds_day[i],ds,ds_size);
-                N_boom[i]=N;
-            }
-            //query0, merge1, boom2
-            if(command[i][0]==0){
-                printf("%d\n",N);
-            }
-            else if(command[i][0]==1){
-                if(!same_set(command[i][1],command[i][2])){
-                    N--;
-                    group(command[i][1],command[i][2]);
-                }
-            }
-            else{
-                memcpy(ds,ds_day[command[i][1]],ds_size);
-                N=N_boom[command[i][1]];
-            }
+    int* boom_num=malloc(M*sizeof(int));
+    int boom_count=0;
+    for(int i=0;i<M;i++){
+        if(boom_exist[i]){
+            boom_num[boom_count]=i;
+            boom_count++;
         }
     }
-    else{
-        //執行每天動作
-        for(int i=0;i<M;i++){
-            //query0, merge1, boom2
-            if(command[i][0]==0){
-                printf("%d\n",N);
+    int* boom_pos=malloc(M*sizeof(int));
+    int j=0;
+    for(int i=0;i<M;i++){
+        boom_pos[i]=-1;
+    }
+    for(int i=0;i<M&&j<boom_count;i++){
+        if(i==boom_num[j]){
+            boom_pos[i]=j;
+            j++;
+        }
+    }
+    //boom N
+    int* N_boom=malloc(boom_count*sizeof(int));
+    for(int i=0;i<boom_count;i++){
+        N_boom[i]=0;
+    }
+    //boom ds
+    DisjointSet** ds_day= malloc(boom_count*sizeof(DisjointSet*));
+    for(int i=0;i<boom_count;i++){
+        ds_day[i]=malloc(ds_size);
+    }
+    
+    //執行每天動作
+    for(int i=0;i<M;i++){
+        //存日後boom
+        if(boom_pos[i]!=-1){
+            memcpy(ds_day[boom_pos[i]],ds,ds_size);
+            N_boom[boom_pos[i]]=N;
+        }
+        //query0, merge1, boom2
+        if(command[i][0]==0){
+            printf("%d\n",N);
+        }
+        else if(command[i][0]==1){
+            if(!same_set(command[i][1],command[i][2])){
+                N--;
+                group(command[i][1],command[i][2]);
             }
-            else if(command[i][0]==1){
-                if(!same_set(command[i][1],command[i][2])){
-                    N--;
-                    group(command[i][1],command[i][2]);
-                }
-            }
+        }
+        else{
+            memcpy(ds,ds_day[boom_pos[command[i][1]]],ds_size);
+            N=N_boom[boom_pos[command[i][1]]];
         }
     }
     
-    
-    
-
+    for(int i=0;i<boom_count;i++){
+        free(ds_day[i]);
+    }
+    free(ds_day);
 }
