@@ -60,11 +60,17 @@ bool same_set(int a,int b) {
 
 int command[1000000][3]={};
 int main() {
-    //input
+    // TODO: Implement your algorithm here
     int N,M;
     scanf("%d %d",&N,&M);
     int ds_size=N*sizeof(DisjointSet);
+    for(int i=0;i<N;i++){
+        makeset(i);
+    }
+
     char str[10];
+    int person1;
+    int person2;
     for(int i=0;i<M;i++){
         //query0, merge1, boom2
         scanf("%s",str);
@@ -80,72 +86,48 @@ int main() {
             scanf("%d",&command[i][1]);
         }
     }
-    
-    //存boom資訊
-    bool* boom_exist=malloc(M*sizeof(bool));
-    bool boom_exist_some=false;
+
+    //算boom數量
+    int* boom=malloc(M*sizeof(int));
     for(int i=0;i<M;i++){
-        boom_exist[i]=false;
+        boom[i]=0;
     }
     for(int i=0;i<M;i++){
+        //query0, merge1, boom2
         if(command[i][0]==2){
-            boom_exist[command[i][1]]=true;
-            boom_exist_some=true;
+            boom[command[i][1]]=1;
         }
     }
 
-    if(boom_exist_some){
-        //boom N
-        int* N_boom=malloc(M*sizeof(int));
-        for(int i=0;i<M;i++){
-            N_boom[i]=0;
-        }
-        //boom ds
-        DisjointSet** ds_day= malloc(M*sizeof(DisjointSet*));
-        for(int i=0;i<M;i++){
-            ds_day[i]=malloc(ds_size);
-        }
-
-        //執行每天動作
-        for(int i=0;i<M;i++){
-            //存日後boom
-            if(boom_exist[i]){
-                memcpy(ds_day[i],ds,ds_size);
-                N_boom[i]=N;
-            }
-            //query0, merge1, boom2
-            if(command[i][0]==0){
-                printf("%d\n",N);
-            }
-            else if(command[i][0]==1){
-                if(!same_set(command[i][1],command[i][2])){
-                    N--;
-                    group(command[i][1],command[i][2]);
-                }
-            }
-            else{
-                memcpy(ds,ds_day[command[i][1]],ds_size);
-                N=N_boom[command[i][1]];
-            }
-        }
+    //製作儲存boom日子的ds
+    DisjointSet** ds_day= malloc(M*sizeof(DisjointSet*));
+    for(int i=0;i<M;i++){
+        ds_day[i]=malloc(ds_size);
     }
-    else{
-        //執行每天動作
-        for(int i=0;i<M;i++){
-            //query0, merge1, boom2
-            if(command[i][0]==0){
-                printf("%d\n",N);
+
+    
+    
+    //執行每天動作
+    for(int i=0;i<M;i++){
+        //存日後boom
+        if(boom[i]){
+            memcpy(ds_day[i],ds,ds_size);
+            boom[i]=N;
+        }
+        //query0, merge1, boom2
+        if(command[i][0]==0){
+            printf("%d\n",N);
+        }
+        else if(command[i][0]==1){
+            if(!same_set(command[i][1],command[i][2])){
+                N--;
+                group(command[i][1],command[i][2]);
             }
-            else if(command[i][0]==1){
-                if(!same_set(command[i][1],command[i][2])){
-                    N--;
-                    group(command[i][1],command[i][2]);
-                }
-            }
+        }
+        else{
+            memcpy(ds,ds_day[command[i][1]],ds_size);
+            N=boom[command[i][1]];
         }
     }
     
-    
-    
-
 }

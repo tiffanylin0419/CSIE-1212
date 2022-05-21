@@ -89,6 +89,7 @@ int main() {
 
     //算boom數量
     int* boom=malloc(M*sizeof(int));
+    bool boom_exist=false;
     for(int i=0;i<M;i++){
         boom[i]=0;
     }
@@ -96,38 +97,59 @@ int main() {
         //query0, merge1, boom2
         if(command[i][0]==2){
             boom[command[i][1]]=1;
+            boom_exist=true;
         }
     }
 
-    //製作儲存boom日子的ds
-    DisjointSet** ds_day= malloc(M*sizeof(DisjointSet*));
-    for(int i=0;i<M;i++){
-        ds_day[i]=malloc(ds_size);
-    }
-
-    
-    
-    //執行每天動作
-    for(int i=0;i<M;i++){
-        //存日後boom
-        if(boom[i]){
-            memcpy(ds_day[i],ds,ds_size);
-            boom[i]=N;
+    if(boom_exist){
+        //製作儲存boom日子的ds
+        DisjointSet** ds_day= malloc(M*sizeof(DisjointSet*));
+        for(int i=0;i<M;i++){
+            ds_day[i]=malloc(ds_size);
         }
-        //query0, merge1, boom2
-        if(command[i][0]==0){
-            printf("%d\n",N);
-        }
-        else if(command[i][0]==1){
-            if(!same_set(command[i][1],command[i][2])){
-                N--;
-                group(command[i][1],command[i][2]);
+        //執行每天動作
+        for(int i=0;i<M;i++){
+            //存日後boom
+            if(boom[i]){
+                memcpy(ds_day[i],ds,ds_size);
+                boom[i]=N;
+            }
+            //query0, merge1, boom2
+            if(command[i][0]==0){
+                printf("%d\n",N);
+            }
+            else if(command[i][0]==1){
+                if(!same_set(command[i][1],command[i][2])){
+                    N--;
+                    group(command[i][1],command[i][2]);
+                }
+            }
+            else{
+                memcpy(ds,ds_day[command[i][1]],ds_size);
+                N=boom[command[i][1]];
             }
         }
-        else{
-            memcpy(ds,ds_day[command[i][1]],ds_size);
-            N=boom[command[i][1]];
+        for(int i=0;i<M;i++){
+            free(ds_day[i]);
+        }
+        free(ds_day);
+    }
+    else{
+        //執行每天動作
+        for(int i=0;i<M;i++){
+            //query0, merge1, boom2
+            if(command[i][0]==0){
+                printf("%d\n",N);
+            }
+            else if(command[i][0]==1){
+                if(!same_set(command[i][1],command[i][2])){
+                    N--;
+                    group(command[i][1],command[i][2]);
+                }
+            }
         }
     }
+
+    
     
 }
