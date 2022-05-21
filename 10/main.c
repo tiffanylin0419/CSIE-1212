@@ -9,34 +9,28 @@ typedef struct disjointSet{
     int parent; 
 } DisjointSet;
 
-DisjointSet ds[1000000];
-bool set[1000000] = {};
+//DisjointSet ds[1000000];
 
-void makeset(int i){
+void makeset(int N,DisjointSet* ds){
     // TODO: Initialize a set with hash value
-    ds[i].parent=i;
-    ds[i].rank=0;
-}
-/*
-inline void static init(int i) {
-    if (!set[i]) {
-        makeset(i);
-        set[i] = 1;
+    for(int i=0;i<N;i++){
+        ds[i].parent=i;
+        ds[i].rank=0;
     }
+    
 }
-*/
-int find_set(int i) {
-    //init(i);
+
+int find_set(int i,DisjointSet* ds) {
     // TODO: Implement your find algorithm here
     if(ds[i].parent!=i){
-        ds[i].parent=find_set(ds[i].parent);
+        ds[i].parent=find_set(ds[i].parent,ds);
     }
     return ds[i].parent;
 }
 
-void group(int a, int b) {
-    a=find_set(a);
-    b=find_set(b);
+void group(int a, int b,DisjointSet* ds) {
+    a=find_set(a,ds);
+    b=find_set(b,ds);
     // TODO: Implement your union algorithm here
     if(ds[a].rank < ds[b].rank){
         ds[a].parent=b;
@@ -50,28 +44,25 @@ void group(int a, int b) {
     }
 }
 
-bool same_set(int a,int b) {
+bool same_set(int a,int b,DisjointSet* ds) {
     // TODO: Implement your algorithm here
-    int aa=find_set(a);
-    int bb=find_set(b);
+    int aa=find_set(a,ds);
+    int bb=find_set(b,ds);
     if(aa==bb){
         return true;
     }
     return false;
 }
 
-
-
 int command[1000000][3]={};
-
 int main() {
     // TODO: Implement your algorithm here
     int N,M;
     scanf("%d %d",&N,&M);
 
-    for(int i=0;i<N;i++){
-        makeset(i);
-    }
+    DisjointSet* ds= malloc(N*sizeof(DisjointSet));
+    makeset(N,ds);
+    
 
     char str[10000];
     int person1;
@@ -97,9 +88,9 @@ int main() {
             printf("%d\n",N);
         }
         else if(command[i][0]==1){
-            if(!same_set(command[i][1],command[i][2])){
+            if(!same_set(command[i][1],command[i][2],ds)){
                 N--;
-                group(command[i][1],command[i][2]);
+                group(command[i][1],command[i][2],ds);
             }
         }
         else{
@@ -107,20 +98,4 @@ int main() {
         }
     }
     
-    /*
-    for(int i=0;i<num;i++){
-        scanf("%s %d %d",str,&person1,&person2);
-        if(str[0]=='g'){
-            group(person1,person2);
-        }
-        else{
-            if(same_set(person1,person2)){
-                printf("Positive\n");
-            }
-            else{
-                printf("Negative\n");
-            }
-        }
-    }
-    */
 }
