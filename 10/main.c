@@ -57,9 +57,7 @@ bool same_set(int a,int b) {
     return false;
 }
 
-int cmp ( const void *a , const void *b ) { 
-    return *(int *)a - *(int *)b; 
-}
+
 int command[1000000][3]={};
 int main() {
     //input
@@ -87,11 +85,11 @@ int main() {
     bool* boom_exist=malloc(M*sizeof(bool));
     bool boom_exist_some=false;
     for(int i=0;i<M;i++){
-        boom_exist[i]=0;
+        boom_exist[i]=false;
     }
     for(int i=0;i<M;i++){
         if(command[i][0]==2){
-            boom_exist[command[i][1]]=1;
+            boom_exist[command[i][1]]=true;
             boom_exist_some=true;
         }
     }
