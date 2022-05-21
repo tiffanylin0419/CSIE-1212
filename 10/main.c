@@ -86,16 +86,26 @@ int main() {
     }
     
     //存boom資訊
+    bool* boom_exist=malloc(M*sizeof(bool));
+    for(int i=0;i<M;i++){
+        boom_exist[i]=0;
+    }
+    for(int i=0;i<M;i++){
+        //query0, merge1, boom2
+        if(command[i][0]==2){
+            boom_exist[command[i][1]]=1;
+        }
+    }
+
     int* boom_num=malloc(M*sizeof(int));
     int boom_count=0;
     for(int i=0;i<M;i++){
         //query0, merge1, boom2
-        if(command[i][0]==2){
-            boom_num[boom_count]=command[i][1];
+        if(boom_exist[i]){
+            boom_num[boom_count]=i;
             boom_count++;
         }
     }
-    qsort(boom_num,boom_count,sizeof(int),cmp);
     int* boom_pos=malloc(M*sizeof(int));
     int j=0;
     for(int i=0;i<M;i++){
@@ -120,7 +130,6 @@ int main() {
     
     //執行每天動作
     for(int i=0;i<M;i++){
-        
         //存日後boom
         if(boom_pos[i]!=-1){
             memcpy(ds_day[boom_pos[i]],ds,ds_size);
