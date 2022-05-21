@@ -94,17 +94,13 @@ int main() {
             boom_exist_some=true;
         }
     }
-
-    
-
+    //製作儲存boom日子的ds
+    DisjointSet** ds_day= malloc(M*sizeof(DisjointSet*));
+    for(int i=0;i<M;i++){
+        ds_day[i]=malloc(ds_size);
+    }
 
     if(boom_exist_some){
-        //製作儲存boom日子的ds
-        DisjointSet** ds_day= malloc(M*sizeof(DisjointSet*));
-        for(int i=0;i<M;i++){
-            ds_day[i]=malloc(ds_size);
-        }
-
         //執行每天動作
         for(int i=0;i<M;i++){
             //存日後boom
@@ -143,8 +139,4 @@ int main() {
             }
         }
     }
-    
-    
-    
-
 }
