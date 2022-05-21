@@ -81,25 +81,26 @@ int main() {
         }
     }
     
-    //算boom數量
+    //存boom資訊
+    bool* boom_exist=malloc(M*sizeof(bool));
     bool boom_exist_some=false;
-    int* boom=malloc(M*sizeof(int));
     for(int i=0;i<M;i++){
-        boom[i]=0;
+        boom_exist[i]=false;
     }
     for(int i=0;i<M;i++){
-        //query0, merge1, boom2
         if(command[i][0]==2){
-            boom[command[i][1]]=1;
+            boom_exist[command[i][1]]=true;
             boom_exist_some=true;
         }
     }
 
-    
-
-
     if(boom_exist_some){
-        //製作儲存boom日子的ds
+        //boom N
+        int* N_boom=malloc(M*sizeof(int));
+        for(int i=0;i<M;i++){
+            N_boom[i]=0;
+        }
+        //boom ds
         DisjointSet** ds_day= malloc(M*sizeof(DisjointSet*));
         for(int i=0;i<M;i++){
             ds_day[i]=malloc(ds_size);
@@ -108,9 +109,9 @@ int main() {
         //執行每天動作
         for(int i=0;i<M;i++){
             //存日後boom
-            if(boom[i]){
+            if(boom_exist[i]){
                 memcpy(ds_day[i],ds,ds_size);
-                boom[i]=N;
+                N_boom[i]=N;
             }
             //query0, merge1, boom2
             if(command[i][0]==0){
@@ -124,7 +125,7 @@ int main() {
             }
             else{
                 memcpy(ds,ds_day[command[i][1]],ds_size);
-                N=boom[command[i][1]];
+                N=N_boom[command[i][1]];
             }
         }
     }
