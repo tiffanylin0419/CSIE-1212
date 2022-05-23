@@ -74,12 +74,12 @@ bool same_set(int a,int b) {
 
 void PurpleCow(int start,int M,int N){
     for(int i=start;i<M;i++){
-        if(i==start&&i!=0){
+        if(i==start && command[i][0]==2){
+            query[i]=N;
             while(boom_pos[i]->next!=NULL){
                 PurpleCow(boom_pos[i]->value,M,N);
                 boom_pos[i]=boom_pos[i]->next;
             }
-            query[i]=N;
             continue;
         }
         //如果i in boom_pos要recursive
