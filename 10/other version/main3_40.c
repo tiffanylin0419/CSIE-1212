@@ -13,11 +13,11 @@ typedef struct node{
     struct node* next; 
 } Node;
 
-DisjointSet ds[1000001];
-Node* boom_pos[1000001];
-int query[1000001] = {0};
-int action[1000001] = {0};
-int command[1000001][3]={0};
+DisjointSet ds[1000000];
+Node* boom_pos[1000000];
+int query[1000000] = {0};
+int action[1000000] = {0};
+int command[1000000][3]={0};
 
 void makenode(int i,int val){
     Node* tmp=(Node *)malloc(sizeof(Node)); 
@@ -73,17 +73,13 @@ bool same_set(int a,int b) {
 }
 
 void PurpleCow(int start,int M,int N){
-    for(int i=start;i<=M;i++){
-        
-        if(start==i && i!=0){
-            query[i]=N;
-            while(boom_pos[i]->next!=NULL){
-                PurpleCow(boom_pos[i]->value,M,N);
-                boom_pos[i]=boom_pos[i]->next;
-            }
-            continue;
+    for(int i=start;i<M;i++){
+
+        //如果i in boom_pos要recursive
+        while(boom_pos[i]->next!=NULL){
+            PurpleCow(boom_pos[i]->value+1,M,N);//?
+            boom_pos[i]=boom_pos[i]->next;
         }
-        
         //query0, merge1, boom2
         if(command[i][0]==0){
             query[i]=N;
@@ -106,11 +102,6 @@ void PurpleCow(int start,int M,int N){
             }
             break;
         }
-        //如果i in boom_pos要recursive
-        while(boom_pos[i]->next!=NULL){
-            PurpleCow(boom_pos[i]->value,M,N);
-            boom_pos[i]=boom_pos[i]->next;
-        }
     }
     return;
 }
@@ -118,7 +109,6 @@ void PurpleCow(int start,int M,int N){
 
 int main() {
     // save input info in command
-    
     int N,M;
     scanf("%d %d",&N,&M);
     int ds_size=N*sizeof(DisjointSet);
@@ -126,7 +116,7 @@ int main() {
         makeset(i);
     }
     char str[10];
-    for(int i=1;i<=M;i++){
+    for(int i=0;i<M;i++){
         //query0, merge1, boom2
         scanf("%s",str);
         if(str[0]=='q'){
@@ -149,48 +139,46 @@ int main() {
         makeset(i);
     }
     //query0, merge1, boom2
+    command[0][0]=1;
+    command[0][1]=1;
+    command[0][2]=2;
     command[1][0]=1;
     command[1][1]=1;
-    command[1][2]=2;
-    command[2][0]=1;
-    command[2][1]=1;
-    command[2][2]=3;
-    command[3][0]=0;
-    command[4][0]=2;
-    command[4][1]=1;
-    command[5][0]=0;
+    command[1][2]=3;
+    command[2][0]=0;
+    command[3][0]=2;
+    command[3][1]=1;
+    command[4][0]=0;
+    command[5][0]=1;
+    command[5][1]=1;
+    command[5][2]=3;
     command[6][0]=1;
-    command[6][1]=1;
-    command[6][2]=3;
-    command[7][0]=1;
-    command[7][1]=2;
-    command[7][2]=4;
-    command[8][0]=2;
-    command[8][1]=4;
-    command[9][0]=0;
-    command[10][0]=2;
-    command[10][1]=0;
-    command[11][0]=0;
+    command[6][1]=2;
+    command[6][2]=4;
+    command[7][0]=2;
+    command[7][1]=4;
+    command[8][0]=0;
+    command[9][0]=2;
+    command[9][1]=0;
+    command[10][0]=0;
     */
 
     //保證最後一個是query
-    for(int i=M;i>=1;i--){
+    for(int i=M-1;i>=0;i--){
         if(command[i][0]==0){
-            M=i;
+            M=i+1;
             break;
         }
     }
     
     //save info in boom_pos
-    for(int i=1;i<=M;i++){
+    for(int i=0;i<M;i++){
         action[i]=-1;
-    }
-    for(int i=0;i<=M;i++){
         boom_pos[i]=(Node *)malloc(sizeof(Node)); 
         boom_pos[i]->value=-1;
         boom_pos[i]->next=NULL;
     }
-    for(int i=1;i<=M;i++){
+    for(int i=0;i<M;i++){
         if(command[i][0]==2){
             makenode(command[i][1],i);
         }
@@ -203,7 +191,7 @@ int main() {
         printf("%d\n",action[i]);
     }*/
 
-    for(int i=1;i<=M;i++){
+    for(int i=0;i<M;i++){
         if(command[i][0]==0){
             printf("%d\n",query[i]);
         }
