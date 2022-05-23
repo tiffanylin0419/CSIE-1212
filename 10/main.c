@@ -15,8 +15,8 @@ typedef struct node{
 
 DisjointSet ds[1000000];
 Node* boom_pos[1000000];
-int query[1000000] = {-1};
-int action[1000000] = {-1};
+int query[1000000] = {0};
+int action[1000000] = {};
 int command[1000000][3]={};
 
 void makenode(int i,int val){
@@ -74,6 +74,11 @@ bool same_set(int a,int b) {
 
 void PurpleCow(int start,int M,int N){
     for(int i=start;i<M;i++){
+        //如果i in boom_pos要recursive
+        while(boom_pos[i]->next!=NULL){
+            PurpleCow(boom_pos[i]->value+1,M,N);
+            boom_pos[i]=boom_pos[i]->next;
+        }
         //query0, merge1, boom2
         if(command[i][0]==0){
             query[i]=N;
@@ -90,17 +95,12 @@ void PurpleCow(int start,int M,int N){
             //退回去
             while(i>=start){
                 if(action[i]!=-1){
-                    degroup(i);
+                    degroup(action[i]);
                     N++;
                 }
                 i--;
             }
             break;
-        }
-        //如果i in boom_pos要recursive
-        while(boom_pos[i]->next!=NULL){
-            PurpleCow(boom_pos[i]->value+1,M,N);
-            boom_pos[i]=boom_pos[i]->next;
         }
     }
     return;
@@ -131,10 +131,11 @@ int main() {
             scanf("%d",&command[i][1]);
         }
     }
+    
     /* debugging
     int N=4,M=11;
     int ds_size=N*sizeof(DisjointSet);
-    for(int i=0;i<N;i++){
+    for(int i=1;i<=N;i++){
         makeset(i);
     }
     //query0, merge1, boom2
@@ -172,6 +173,7 @@ int main() {
     
     //save info in boom_pos
     for(int i=0;i<M;i++){
+        action[i]=-1;
         boom_pos[i]=(Node *)malloc(sizeof(Node)); 
         boom_pos[i]->value=-1;
         boom_pos[i]->next=NULL;
@@ -184,22 +186,14 @@ int main() {
 
 
     PurpleCow(0,M,N);
-    int i;
-    for(i=0;i<M;i++){
-        if(command[i][0]==2){
-            break;
-        }
-    }
-    for(int j=i;j<M;j++){
-        query[j]++;
-    }
-    
+    /* check action
+    for(int i=0;i<M;i++){
+        printf("%d\n",action[i]);
+    }*/
 
     for(int i=0;i<M;i++){
         if(command[i][0]==0){
             printf("%d\n",query[i]);
         }
     }
-
-  
 }
