@@ -175,12 +175,13 @@ int main() {
     */
 
     //保證最後一個是query
+    /*
     for(int i=M;i>=1;i--){
         if(command[i][0]==0){
             M=i;
             break;
         }
-    }
+    }*/
     
     //save info in boom_pos
     for(int i=1;i<=M;i++){
