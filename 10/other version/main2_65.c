@@ -19,14 +19,9 @@ void makeset(int i){
     set[i] = 1;
 }
 
-inline void static init(int i) {
-    if (!set[i]) {
-        makeset(i);
-    }
-}
+
 
 int find_set(int i) {
-    init(i);
     if(ds[i].parent!=i){
         ds[i].parent=find_set(ds[i].parent);
     }
@@ -63,8 +58,8 @@ int main() {
     // TODO: Implement your algorithm here
     int N,M;
     scanf("%d %d",&N,&M);
-    int ds_size=N*sizeof(DisjointSet);
-    for(int i=0;i<N;i++){
+    int ds_size=(N+1)*sizeof(DisjointSet);
+    for(int i=1;i<=N;i++){
         makeset(i);
     }
 
