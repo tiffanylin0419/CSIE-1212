@@ -121,8 +121,9 @@ int main() {
     
     int N,M;
     scanf("%d %d",&N,&M);
+    
     int ds_size=N*sizeof(DisjointSet);
-    for(int i=0;i<N;i++){
+    for(int i=1;i<=N;i++){
         makeset(i);
     }
     char str[10];
