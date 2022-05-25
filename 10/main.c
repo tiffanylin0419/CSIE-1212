@@ -75,7 +75,7 @@ bool same_set(int a,int b) {
 void PurpleCow(int start,int M,int N){
     for(int i=start;i<=M;i++){
         
-        if(start==i && i!=0){
+        if(start==i){//?
             query[i]=N;
             while(boom_pos[i]->next!=NULL){
                 PurpleCow(boom_pos[i]->value,M,N);
@@ -98,7 +98,18 @@ void PurpleCow(int start,int M,int N){
         }
         else{
             //退回去
-            while(i>=start){
+            i--;//?
+            while(i>start){//?
+                if(action[i]!=-1){
+                    degroup(action[i]);
+                }
+                i--;
+            }
+            break;
+        }
+        if(i==M){//?
+            //退回去
+            while(i>start){//? >= to >
                 if(action[i]!=-1){
                     degroup(action[i]);
                 }
@@ -143,45 +154,14 @@ int main() {
         }
     }
     
-    /* debugging
-    int N=4,M=11;
-    int ds_size=N*sizeof(DisjointSet);
-    for(int i=1;i<=N;i++){
-        makeset(i);
-    }
-    //query0, merge1, boom2
-    command[1][0]=1;
-    command[1][1]=1;
-    command[1][2]=2;
-    command[2][0]=1;
-    command[2][1]=1;
-    command[2][2]=3;
-    command[3][0]=0;
-    command[4][0]=2;
-    command[4][1]=1;
-    command[5][0]=0;
-    command[6][0]=1;
-    command[6][1]=1;
-    command[6][2]=3;
-    command[7][0]=1;
-    command[7][1]=2;
-    command[7][2]=4;
-    command[8][0]=2;
-    command[8][1]=4;
-    command[9][0]=0;
-    command[10][0]=2;
-    command[10][1]=0;
-    command[11][0]=0;
-    */
 
     //保證最後一個是query
-    /*
     for(int i=M;i>=1;i--){
         if(command[i][0]==0){
             M=i;
             break;
         }
-    }*/
+    }
     
     //save info in boom_pos
     for(int i=1;i<=M;i++){
