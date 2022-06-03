@@ -11,7 +11,6 @@ void CoolServer(int start,int M,int N){
 int arr[100001]={0};
 long long sum[100001]={0};
 int command[100000][5]={0};
-int add[100000]={0};
 int main() {
     // save input info in command
     
@@ -40,10 +39,12 @@ int main() {
             scanf("%d %d",&command[i][1],&command[i][2]);
         }
     }
-    int add_len=0;
     for(int i=0;i<Q;i++){
         if(command[i][0]==1){
-            break;
+            N++;
+            for(int j=N;j>command[i][1];j--){
+                sum[j]=sum[j-1]+command[i][2];
+            }
         }else if(command[i][0]==2){
             break;
         }else if(command[i][0]==3){
@@ -53,24 +54,7 @@ int main() {
         }else if(command[i][0]==5){
             break;
         }else if(command[i][0]==6){
-            /*
-            int add_num=0;
-            for(int j=0;j<add_len;j++){
-                if(command[i][1]<=command[add[j]][1]+1 && command[add[j]][1]+1<=command[i][2]){
-                    command[i][2]--;
-                    add_num+=command[add[j]][2];
-                }else if(command[add[j]][1]+1<command[i][1]){
-                    command[i][1]--;
-                    command[i][2]--;
-                }
-            }
-            printf("%lld\n",sum[command[i][2]]-sum[command[i][1]-1]+add_num);
-            */
-            long long sums=0;
-            for(int j=command[i][1];j<=command[i][2];j++){
-                sums+=arr[j];
-            }
-            printf("%lld\n",sums);
+            printf("%lld\n",sum[command[i][2]]-sum[command[i][1]-1]);
         }
     }
 }
