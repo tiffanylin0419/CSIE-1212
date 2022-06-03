@@ -8,8 +8,8 @@ void CoolServer(int start,int M,int N){
     
 }
 
-int arr[100001]={0};
-long long sum[100001]={0};
+long long arr[200001]={0};
+long long sum[200001]={0};
 int command[100000][5]={0};
 int main() {
     // save input info in command
@@ -17,7 +17,7 @@ int main() {
     int N,Q;
     scanf("%d %d",&N,&Q);
     for(int i=1;i<=N;i++){
-        scanf("%d",&arr[i]);
+        scanf("%lld",&arr[i]);
     }
     for(int i=1;i<=N;i++){
         sum[i]=sum[i-1]+arr[i];
@@ -46,11 +46,11 @@ int main() {
                 sum[j]=sum[j-1]+command[i][2];
             }
         }else if(command[i][0]==2){
-            N--;
-            int num=arr[command[i][1]];
-            for(int j=command[i][1];j<=N;j++){
+            long long num=arr[command[i][1]];
+            for(int j=command[i][1];j<N;j++){
                 sum[j]=sum[j+1]-num;
             }
+            N--;
         }else if(command[i][0]==3){
             break;
         }else if(command[i][0]==4){
