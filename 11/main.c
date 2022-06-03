@@ -52,7 +52,14 @@ int main() {
             }
             N--;
         }else if(command[i][0]==3){
-            break;
+            int left=command[i][1];
+            int right=command[i][2];
+            for(int j=left;j<=right;j++){
+                arr[j]=sum[j]-sum[j-1];
+            }
+            for(int j=left;j<=right;j++){
+                sum[j]=sum[j-1]+arr[right-j+left];
+            }
         }else if(command[i][0]==4){
             break;
         }else if(command[i][0]==5){
@@ -60,5 +67,10 @@ int main() {
         }else if(command[i][0]==6){
             printf("%lld\n",sum[command[i][2]]-sum[command[i][1]-1]);
         }
+        /*
+        for(int j=1;j<=N;j++){
+            printf("%lld ",sum[j]);
+        }
+        printf("\n");*/
     }
 }
