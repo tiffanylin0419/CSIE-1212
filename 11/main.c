@@ -46,7 +46,11 @@ int main() {
                 sum[j]=sum[j-1]+command[i][2];
             }
         }else if(command[i][0]==2){
-            break;
+            N--;
+            int num=arr[command[i][1]];
+            for(int j=command[i][1];j<=N;j++){
+                sum[j]=sum[j+1]-num;
+            }
         }else if(command[i][0]==3){
             break;
         }else if(command[i][0]==4){
