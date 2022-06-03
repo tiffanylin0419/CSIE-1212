@@ -43,9 +43,7 @@ int main() {
     int add_len=0;
     for(int i=0;i<Q;i++){
         if(command[i][0]==1){
-            N++;
-            add[add_len]=i;
-            add_len++;
+            break;
         }else if(command[i][0]==2){
             break;
         }else if(command[i][0]==3){
@@ -55,6 +53,7 @@ int main() {
         }else if(command[i][0]==5){
             break;
         }else if(command[i][0]==6){
+            /*
             int add_num=0;
             for(int j=0;j<add_len;j++){
                 if(command[i][1]<=command[add[j]][1]+1 && command[add[j]][1]+1<=command[i][2]){
@@ -66,6 +65,12 @@ int main() {
                 }
             }
             printf("%lld\n",sum[command[i][2]]-sum[command[i][1]-1]+add_num);
+            */
+            long long sums=0;
+            for(int j=command[i][1];j<=command[i][2];j++){
+                sums+=arr[j];
+            }
+            printf("%lld\n",sums);
         }
     }
 }
