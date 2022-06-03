@@ -54,9 +54,10 @@ int main() {
         }else if(command[i][0]==3){
             int left=command[i][1];
             int right=command[i][2];
+            /*
             for(int j=left;j<=right;j++){
                 arr[j]=sum[j]-sum[j-1];
-            }
+            }*/
             for(int j=left;j<=right;j++){
                 sum[j]=sum[j-1]+arr[right-j+left];
             }
