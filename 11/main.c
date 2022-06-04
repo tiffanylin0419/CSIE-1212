@@ -48,7 +48,28 @@ void update_nodes(Treap* t){
         t->sum+=t->r->sum;
     }
 }
-
+void push(Treap *t){
+    if(t->flip){
+        t->flip=false;
+        if(t->r==NULL&&t->l==NULL){
+            return;
+        }else if(t->r==NULL){
+            t->r=t->l;
+            t->l=NULL;
+            t->r->flip=(t->r->flip==false);
+        }else if(t->l==NULL){
+            t->l=t->r;
+            t->r=NULL;
+            t->l->flip=(t->l->flip==false);
+        }else{
+            Treap *tmp=t->l;
+            t->l=t->r;
+            t->r=tmp;
+            t->l->flip=(t->l->flip==false);
+            t->r->flip=(t->r->flip==false);
+        }
+    }
+}
 void heapify(Treap *t){
     Treap* max=t;
     if(t->l!=NULL && t->l->priority>max->priority){
@@ -91,6 +112,7 @@ void INORDER_TRAVERSAL(Treap* t){
 }
 
 void kth(Treap* t,int k, Treap** kk){
+    push(t);
     if(t->l==NULL){
         if(k==1){
             *kk=t;
@@ -116,7 +138,7 @@ void kth(Treap* t,int k, Treap** kk){
 
 void split(Treap* t,int k, Treap** a, Treap** b,  Treap* kk)
 { 
-    //push(t);
+    push(t);
     if(t==kk){
         *a=kk;
         *b=kk->r;
@@ -124,19 +146,15 @@ void split(Treap* t,int k, Treap** a, Treap** b,  Treap* kk)
         update_nodes(t);
         return;
     }
-    
     if(t->l==NULL){
         *a = t;
-        //push(a);
         split(t->r, k - 1, &((*a)->r), b,kk);
     }
     else if(k<=t->l->size){
         *b = t;
-        //push(b);
         split(t->l, k, a, &((*b)->l),kk);
     }else{
         *a = t;
-        //push(a);
         split(t->r, k - t->l->size - 1, &((*a)->r), b,kk);
     }
     update_nodes(t);
@@ -164,8 +182,8 @@ void merge (Treap **t, Treap *l, Treap *r) {
         *t=l;
         return;
     }
-    //push (l);
-    //push (r);
+    push(l);
+    push(r);
     if (l->priority >= r->priority){
         if(l->r==NULL){
             *t=l;
@@ -226,7 +244,14 @@ void shift(Treap** t,long long l,long long r,long long x,long long y){
     merge(&tmp, tmp, t3);
     merge(&tmp, tmp, t2);
     merge(t, tmp, t5);
-    N--;
+}
+void reverse(Treap** t,long long l,long long r){
+    Treap *t1=NULL,*t2=NULL,*t3=NULL,*t4=NULL,*t5=NULL,*tmp=NULL;
+    splits(*t,l-1,&t1,&tmp);
+    splits(tmp,r-l+1,&t2,&t3);
+    t2->flip=(t2->flip==false);
+    merge(&tmp, t1, t2);
+    merge(t, tmp, t3);
 }
 
 long long command[100000][5]={0};
@@ -261,8 +286,8 @@ int main() {
         }else if(command[i][0]==2){
             delete(&root,command[i][1]);
         }else if(command[i][0]==3){
-            //command[i][1]
-            continue;
+            long long l=command[i][1],r=command[i][2];
+            reverse(&root,l,r);
         }else if(command[i][0]==4){
             long long l,r,x,y;
             if(command[i][1]<command[i][3]){
