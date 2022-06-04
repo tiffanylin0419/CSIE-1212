@@ -74,7 +74,9 @@ void push(Treap *t){
 }
 void push2(Treap *t){
     if(t->lazy!=LLONG_MAX){
-        t->key=t->lazy;
+        if(t->key>t->lazy){
+            t->key=t->lazy;
+        }
         if(t->r==NULL&&t->l==NULL){
             t->lazy=LLONG_MAX;
             return;
