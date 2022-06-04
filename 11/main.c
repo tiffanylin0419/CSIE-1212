@@ -14,14 +14,14 @@ typedef struct treap{
     long long sum;
     int size;
     bool flip;
-    long long lazy;
+    long long max;
 }Treap;
 Treap *alloc(long long key, int priority){
     Treap *tmp = (Treap *)malloc(sizeof(Treap)); 
     tmp->key = key;
     tmp->priority = priority;
     tmp->flip=false;
-    tmp->lazy=LLONG_MAX;
+    tmp->max=key;
     tmp->size=1;
     tmp->sum=key;
     tmp->l=NULL;
@@ -41,13 +41,20 @@ int random_num(){
 void update_nodes(Treap* t){
     t->size = 1;
     t->sum = t->key;
+    t->max = t->key;
     if (t->l!=NULL){
         t->size+=t->l->size;
         t->sum+=t->l->sum;
+        if(t->max<t->l->max){
+            t->max=t->l->max;
+        }
     }
     if (t->r!=NULL){
         t->size+=t->r->size;
         t->sum+=t->r->sum;
+        if(t->max<t->r->max){
+            t->max=t->r->max;
+        }
     }
 }
 void push(Treap *t){
@@ -72,33 +79,7 @@ void push(Treap *t){
         }
     }
 }
-void push2(Treap *t){
-    if(t->lazy!=LLONG_MAX){
-        if(t->key>t->lazy){
-            t->key=t->lazy;
-        }
-        if(t->r==NULL&&t->l==NULL){
-            t->lazy=LLONG_MAX;
-            return;
-        }else if(t->r==NULL){
-            if(t->l->lazy>t->lazy){
-                t->l->lazy=t->lazy;
-            }
-        }else if(t->l==NULL){
-            if(t->r->lazy>t->lazy){
-                t->r->lazy=t->lazy;
-            }
-        }else{
-            if(t->l->lazy>t->lazy){
-                t->l->lazy=t->lazy;
-            }
-            if(t->r->lazy>t->lazy){
-                t->r->lazy=t->lazy;
-            }
-        }
-        t->lazy=LLONG_MAX;
-    }
-}
+
 void heapify(Treap *t){
     Treap* max=t;
     if(t->l!=NULL && t->l->priority>max->priority){
@@ -142,7 +123,6 @@ void INORDER_TRAVERSAL(Treap* t){
 
 void kth(Treap* t,int k, Treap** kk){
     push(t);
-    push2(t);
     if(t->l==NULL){
         if(k==1){
             *kk=t;
@@ -169,7 +149,6 @@ void kth(Treap* t,int k, Treap** kk){
 void split(Treap* t,int k, Treap** a, Treap** b,  Treap* kk)
 { 
     push(t);
-    push2(t);
     if(t==kk){
         *a=kk;
         *b=kk->r;
@@ -214,9 +193,7 @@ void merge (Treap **t, Treap *l, Treap *r) {
         return;
     }
     push(l);
-    push2(l);
     push(r);
-    push2(r);
     if (l->priority >= r->priority){
         if(l->r==NULL){
             *t=l;
@@ -286,16 +263,37 @@ void reverse(Treap** t,long long l,long long r){
     merge(&tmp, t1, t2);
     merge(t, tmp, t3);
 }
-void update(Treap** t,long long l,long long r,long long key){
+long long count=0;
+void update(Treap* t,long long key){
+    if(t->max<key){
+        return;
+    }
+    if(t->l!=NULL){
+        update(t->l, key);
+    }
+    if(t->r!=NULL){
+        update(t->r, key);
+    }
+
+    if(t->key>key){
+        t->key=key;
+        count++;
+    }
+    t->sum-=count*key;
+    t->max=key;
+}
+void updates(Treap** t,long long l,long long r,long long key){
     Treap *t1=NULL,*t2=NULL,*t3=NULL,*tmp=NULL;
     splits(*t,l-1,&t1,&tmp);
     splits(tmp,r-l+1,&t2,&t3);
-    if(t2->lazy>key){
-        t2->lazy=key;
-    }
+    update(t2,key);
     merge(&tmp, t1, t2);
     merge(t, tmp, t3);
 }
+
+
+
+
 
 long long command[100000][5]={0};
 int main() {
@@ -347,9 +345,10 @@ int main() {
             shift(&root,l,r,x,y);
         }else if(command[i][0]==5){
             long long l=command[i][1],r=command[i][2], key=command[i][3];
-            update(&root,l,r,key);
+            updates(&root,l,r,key);
         }else if(command[i][0]==6){
             printf("%lld\n",sums(root,command[i][1],command[i][2]));
+            //INORDER_TRAVERSAL(root);
         }
     }
 }
