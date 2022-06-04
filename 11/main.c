@@ -208,11 +208,24 @@ void insert(Treap** t,long long pos, long long key){
     N++;
 }
 void delete(Treap** t,long long pos){
-    //1 split + 2 merge
+    //2 split + 1 merge
     Treap *t1=NULL,*t2=NULL,*t3=NULL,*tmp=NULL;
     splits(*t,pos-1,&t1,&tmp);
     splits(tmp,1,&t2,&t3);
     merge (t, t1, t3);
+    N--;
+}
+void shift(Treap** t,long long l,long long r,long long x,long long y){
+    //1 split + 2 merge
+    Treap *t1=NULL,*t2=NULL,*t3=NULL,*t4=NULL,*t5=NULL,*tmp=NULL;
+    splits(*t,l-1,&t1,&tmp);
+    splits(tmp,r-l+1,&t2,&tmp);
+    splits(tmp,x-r-1,&t3,&tmp);
+    splits(tmp,y-x+1,&t4,&t5);
+    merge(&tmp, t1, t4);
+    merge(&tmp, tmp, t3);
+    merge(&tmp, tmp, t2);
+    merge(t, tmp, t5);
     N--;
 }
 
@@ -251,7 +264,19 @@ int main() {
             //command[i][1]
             continue;
         }else if(command[i][0]==4){
-            continue;
+            long long l,r,x,y;
+            if(command[i][1]<command[i][3]){
+                l=command[i][1];
+                r=command[i][2];
+                x=command[i][3];
+                y=command[i][4];
+            }else{
+                l=command[i][3];
+                r=command[i][4];
+                x=command[i][1];
+                y=command[i][2];
+            }
+            shift(&root,l,r,x,y);
         }else if(command[i][0]==5){
             continue;
         }else if(command[i][0]==6){

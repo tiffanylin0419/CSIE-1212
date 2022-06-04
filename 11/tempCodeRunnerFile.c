@@ -1,2 +1,2 @@
 
-    if(a==NULL){
+                y=command[i][2];
