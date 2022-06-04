@@ -83,7 +83,7 @@ void INORDER_TRAVERSAL(Treap* t){
     if(t->l!=NULL){
         INORDER_TRAVERSAL(t->l);
     }
-    printf("%d: %d %lld\n",t->key,t->size,t->sum);
+    printf("%lld: %d %lld\n",t->key,t->size,t->sum);
     //printf("%d\n",t->priority);
     if(t->r!=NULL){
         INORDER_TRAVERSAL(t->r);
@@ -198,13 +198,13 @@ long long sums(Treap *t,int left,int right){
     return sum;
 }
 
-void insert(Treap* t,long long pos, long long key){
+void insert(Treap** t,long long pos, long long key){
     //1 split + 2 merge
     Treap *t1=NULL,*t3=NULL,*tmp=NULL;
-    splits(t,pos,&t1,&t3);
+    splits(*t,pos,&t1,&t3);
     Treap* t2=alloc(key,random_num());
     merge (&tmp, t1, t2);
-    merge (&t, tmp, t3);
+    merge (t, tmp, t3);
     N++;
 }
 
@@ -236,7 +236,7 @@ int main() {
     //command
     for(int i=0;i<Q;i++){
         if(command[i][0]==1){
-            insert(root,command[i][1],command[i][2]);
+            insert(&root,command[i][1],command[i][2]);
         }else if(command[i][0]==2){
             //command[i][1]
             continue;

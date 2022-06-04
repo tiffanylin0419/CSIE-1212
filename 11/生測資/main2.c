@@ -197,60 +197,63 @@ long long sums(Treap *t,int left,int right){
     return sum;
 }
 
-void insert(Treap* t,long long pos, long long key){
+void insert(Treap** t,long long pos, long long key){
     //1 split + 2 merge
     Treap *t1=NULL,*t3=NULL,*tmp=NULL;
-    splits(t,pos,&t1,&t3);
+    splits(*t,pos,&t1,&t3);
     Treap* t2=alloc(key,random_num());
     merge (&tmp, t1, t2);
-    merge (&t, tmp, t3);
+    merge (t, tmp, t3);
     N++;
 }
 
 long long command[100000][5]={0};
 int main() {
-    char filename[20];
-    sprintf(filename,"test0.txt");
-    FILE *f =fopen(filename, "r");
-    // input
-    fscanf("%d %d",&N,&Q);
-    for(int i=0;i<N;i++){
-        fscanf("%lld",&arr[i]);
-    }
-    Treap* root=build(arr,N);
-    for(int i=0;i<Q;i++){
-        fscanf("%lld",&command[i][0]);
-        if(command[i][0]==1){
-            fscanf("%lld %lld ",&command[i][1],&command[i][2]);
-        }else if(command[i][0]==2){
-            fscanf("%lld",&command[i][1]);
-        }else if(command[i][0]==3){
-            fscanf("%lld %lld",&command[i][1],&command[i][2]);
-        }else if(command[i][0]==4){
-            fscanf("%lld %lld %lld %lld",&command[i][1],&command[i][2],&command[i][3],&command[i][4]);
-        }else if(command[i][0]==5){
-            fscanf("%lld %lld %lld",&command[i][1],&command[i][2],&command[i][3]);
-        }else{
-            fscanf("%lld %lld ",&command[i][1],&command[i][2]);
+    int h=0;
+    for(int gg=h;gg<h+1;gg++){
+        char filename[20];
+        sprintf(filename,"test%d.txt",gg);
+        FILE *f =fopen(filename, "r");
+        // input
+        fscanf(f,"%d %d",&N,&Q);
+        for(int i=0;i<N;i++){
+            fscanf(f,"%lld",&arr[i]);
         }
-    }
-
-    //command
-    for(int i=0;i<Q;i++){
-        if(command[i][0]==1){
-            insert(root,command[i][1],command[i][2]);
-        }else if(command[i][0]==2){
-            //command[i][1]
-            continue;
-        }else if(command[i][0]==3){
-            //command[i][1]
-            continue;
-        }else if(command[i][0]==4){
-            continue;
-        }else if(command[i][0]==5){
-            continue;
-        }else if(command[i][0]==6){
-            printf("%lld\n",sums(root,command[i][1],command[i][2]));
+        Treap* root=build(arr,N);
+        for(int i=0;i<Q;i++){
+            fscanf(f,"%lld",&command[i][0]);
+            if(command[i][0]==1){
+                fscanf(f,"%lld %lld",&command[i][1],&command[i][2]);
+            }else if(command[i][0]==2){
+                fscanf(f,"%lld",&command[i][1]);
+            }else if(command[i][0]==3){
+                fscanf(f,"%lld %lld",&command[i][1],&command[i][2]);
+            }else if(command[i][0]==4){
+                fscanf(f,"%lld %lld %lld %lld",&command[i][1],&command[i][2],&command[i][3],&command[i][4]);
+            }else if(command[i][0]==5){
+                fscanf(f,"%lld %lld %lld",&command[i][1],&command[i][2],&command[i][3]);
+            }else{
+                fscanf(f,"%lld %lld",&command[i][1],&command[i][2]);
+            }
+        }
+        fclose(f);
+        //command
+        for(int i=0;i<Q;i++){
+            if(command[i][0]==1){
+                insert(&root,command[i][1],command[i][2]);
+            }else if(command[i][0]==2){
+                //command[i][1]
+                continue;
+            }else if(command[i][0]==3){
+                //command[i][1]
+                continue;
+            }else if(command[i][0]==4){
+                continue;
+            }else if(command[i][0]==5){
+                continue;
+            }else if(command[i][0]==6){
+                printf("%lld\n",sums(root,command[i][1],command[i][2]));
+            }
         }
     }
 }
