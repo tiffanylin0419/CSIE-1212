@@ -197,7 +197,17 @@ long long sums(Treap *t,int left,int right){
     return sum;
 }
 
-int command[100000][5]={0};
+void insert(Treap* t,long long pos, long long key){
+    //1 split + 2 merge
+    Treap *t1=NULL,*t3=NULL,*tmp=NULL;
+    splits(t,pos,&t1,&t3);
+    Treap* t2=alloc(key,random_num());
+    merge (&tmp, t1, t2);
+    merge (&t, tmp, t3);
+    N++;
+}
+
+long long command[100000][5]={0};
 int main() {
     // input
     scanf("%d %d",&N,&Q);
@@ -206,27 +216,27 @@ int main() {
     }
     Treap* root=build(arr,N);
     for(int i=0;i<Q;i++){
-        scanf("%d",&command[i][0]);
+        scanf("%lld",&command[i][0]);
         if(command[i][0]==1){
-            scanf("%d %d",&command[i][1],&command[i][2]);
+            scanf("%lld %lld",&command[i][1],&command[i][2]);
         }else if(command[i][0]==2){
-            scanf("%d",&command[i][1]);
+            scanf("%lld",&command[i][1]);
         }else if(command[i][0]==3){
-            scanf("%d %d",&command[i][1],&command[i][2]);
+            scanf("%lld %lld",&command[i][1],&command[i][2]);
         }else if(command[i][0]==4){
-            scanf("%d %d %d %d",&command[i][1],&command[i][2],&command[i][3],&command[i][4]);
+            scanf("%lld %lld %lld %lld",&command[i][1],&command[i][2],&command[i][3],&command[i][4]);
         }else if(command[i][0]==5){
-            scanf("%d %d %d",&command[i][1],&command[i][2],&command[i][3]);
+            scanf("%lld %lld %lld",&command[i][1],&command[i][2],&command[i][3]);
         }else{
-            scanf("%d %d",&command[i][1],&command[i][2]);
+            scanf("%lld %lld",&command[i][1],&command[i][2]);
         }
     }
 
     //command
     for(int i=0;i<Q;i++){
         if(command[i][0]==1){
+            insert(root,command[i][1],command[i][2]);
             //command[i][1]
-            break;
         }else if(command[i][0]==2){
             //command[i][1]
             break;

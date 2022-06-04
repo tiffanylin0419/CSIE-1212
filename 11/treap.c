@@ -194,10 +194,21 @@ long long sums(Treap *t,int left,int right){
     return sum;
 }
 
+void insert(Treap* t,long long pos, long long key){
+    //1 split + 2 merge
+    Treap *t1=NULL,*t3=NULL,*tmp=NULL;
+    splits(t,pos,&t1,&t3);
+    Treap* t2=alloc(key,random_num());
+    merge (&tmp, t1, t2);
+    merge (&t, tmp, t3);
+    N++;
+}
+
 
 int main(){
     long long arr[10]={0,1,2,3,4,5,6,7,8,9};
     Treap* root=build(arr,10);
+    insert(root,2,4);
     //INORDER_TRAVERSAL(root);
     int l=0,r=1;
     printf("sum:%lld\n",sums(root,l,r));
