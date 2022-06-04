@@ -207,6 +207,14 @@ void insert(Treap** t,long long pos, long long key){
     merge (t, tmp, t3);
     N++;
 }
+void delete(Treap** t,long long pos){
+    //1 split + 2 merge
+    Treap *t1=NULL,*t2=NULL,*t3=NULL,*tmp=NULL;
+    splits(*t,pos-1,&t1,&tmp);
+    splits(tmp,1,&t2,&t3);
+    merge (t, t1, t3);
+    N--;
+}
 
 long long command[100000][5]={0};
 int main() {
@@ -238,8 +246,7 @@ int main() {
         if(command[i][0]==1){
             insert(&root,command[i][1],command[i][2]);
         }else if(command[i][0]==2){
-            //command[i][1]
-            continue;
+            delete(&root,command[i][1]);
         }else if(command[i][0]==3){
             //command[i][1]
             continue;
