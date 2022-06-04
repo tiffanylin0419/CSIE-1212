@@ -3,10 +3,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-
-int N,Q;
-long long arr[100001]={0};
-
 typedef struct treap{
     struct treap *l, *r;
     int key, priority;
@@ -63,7 +59,7 @@ void heapify(Treap *t){
         heapify(max);
     }
 }
-Treap* build(long long *arr,int len){
+Treap* build(long long* arr, int len){
     int mid=len/2;
     Treap* t=alloc(arr[mid],random_num());
     //t->nodes=len;
@@ -113,6 +109,7 @@ void kth(Treap* t,int k, Treap** kk){
     return;
 }
 
+int N=10;
 void split(Treap* t,int k, Treap** a, Treap** b,  Treap* kk)
 { 
     //push(t);
@@ -197,48 +194,12 @@ long long sums(Treap *t,int left,int right){
     return sum;
 }
 
-int command[100000][5]={0};
-int main() {
-    // input
-    scanf("%d %d",&N,&Q);
-    for(int i=0;i<N;i++){
-        scanf("%lld",&arr[i]);
-    }
-    Treap* root=build(arr,N);
-    for(int i=0;i<Q;i++){
-        scanf("%d",&command[i][0]);
-        if(command[i][0]==1){
-            scanf("%d %d",&command[i][1],&command[i][2]);
-        }else if(command[i][0]==2){
-            scanf("%d",&command[i][1]);
-        }else if(command[i][0]==3){
-            scanf("%d %d",&command[i][1],&command[i][2]);
-        }else if(command[i][0]==4){
-            scanf("%d %d %d %d",&command[i][1],&command[i][2],&command[i][3],&command[i][4]);
-        }else if(command[i][0]==5){
-            scanf("%d %d %d",&command[i][1],&command[i][2],&command[i][3]);
-        }else{
-            scanf("%d %d",&command[i][1],&command[i][2]);
-        }
-    }
 
-    //command
-    for(int i=0;i<Q;i++){
-        if(command[i][0]==1){
-            //command[i][1]
-            break;
-        }else if(command[i][0]==2){
-            //command[i][1]
-            break;
-        }else if(command[i][0]==3){
-            //command[i][1]
-            break;
-        }else if(command[i][0]==4){
-            break;
-        }else if(command[i][0]==5){
-            break;
-        }else if(command[i][0]==6){
-            printf("%lld\n",sums(root,command[i][1],command[i][2]));
-        }
-    }
+int main(){
+    long long arr[10]={0,1,2,3,4,5,6,7,8,9};
+    Treap* root=build(arr,10);
+    //INORDER_TRAVERSAL(root);
+    int l=0,r=1;
+    printf("sum:%lld\n",sums(root,l,r));
+    INORDER_TRAVERSAL(root);
 }
