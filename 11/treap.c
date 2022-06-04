@@ -208,9 +208,11 @@ void insert(Treap* t,long long pos, long long key){
 int main(){
     long long arr[10]={0,1,2,3,4,5,6,7,8,9};
     Treap* root=build(arr,10);
-    insert(root,2,4);
+    insert(root,10,4);
+    insert(root,12,7);
+    insert(root,8,3);
     //INORDER_TRAVERSAL(root);
-    int l=0,r=1;
+    int l=10,r=12;
     printf("sum:%lld\n",sums(root,l,r));
     INORDER_TRAVERSAL(root);
 }

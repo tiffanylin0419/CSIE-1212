@@ -9,13 +9,12 @@ long long arr[100001]={0};
 
 typedef struct treap{
     struct treap *l, *r;
-    long long key;
-    int priority;
+    int key, priority;
     long long sum;
     int size;
     bool flip;
 }Treap;
-Treap *alloc(long long key, int priority){
+Treap *alloc(int key, int priority){
     Treap *tmp = (Treap *)malloc(sizeof(Treap)); 
     tmp->key = key;
     tmp->priority = priority;
@@ -210,26 +209,29 @@ void insert(Treap* t,long long pos, long long key){
 
 long long command[100000][5]={0};
 int main() {
+    char filename[20];
+    sprintf(filename,"test0.txt");
+    FILE *f =fopen(filename, "r");
     // input
-    scanf("%d %d",&N,&Q);
+    fscanf("%d %d",&N,&Q);
     for(int i=0;i<N;i++){
-        scanf("%lld",&arr[i]);
+        fscanf("%lld",&arr[i]);
     }
     Treap* root=build(arr,N);
     for(int i=0;i<Q;i++){
-        scanf("%lld",&command[i][0]);
+        fscanf("%lld",&command[i][0]);
         if(command[i][0]==1){
-            scanf("%lld %lld",&command[i][1],&command[i][2]);
+            fscanf("%lld %lld ",&command[i][1],&command[i][2]);
         }else if(command[i][0]==2){
-            scanf("%lld",&command[i][1]);
+            fscanf("%lld",&command[i][1]);
         }else if(command[i][0]==3){
-            scanf("%lld %lld",&command[i][1],&command[i][2]);
+            fscanf("%lld %lld",&command[i][1],&command[i][2]);
         }else if(command[i][0]==4){
-            scanf("%lld %lld %lld %lld",&command[i][1],&command[i][2],&command[i][3],&command[i][4]);
+            fscanf("%lld %lld %lld %lld",&command[i][1],&command[i][2],&command[i][3],&command[i][4]);
         }else if(command[i][0]==5){
-            scanf("%lld %lld %lld",&command[i][1],&command[i][2],&command[i][3]);
+            fscanf("%lld %lld %lld",&command[i][1],&command[i][2],&command[i][3]);
         }else{
-            scanf("%lld %lld",&command[i][1],&command[i][2]);
+            fscanf("%lld %lld ",&command[i][1],&command[i][2]);
         }
     }
 
