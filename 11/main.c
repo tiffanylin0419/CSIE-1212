@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-
+#include <limits.h>
 
 int N,Q;
 long long arr[100001]={0};
@@ -14,12 +14,14 @@ typedef struct treap{
     long long sum;
     int size;
     bool flip;
+    long long lazy;
 }Treap;
 Treap *alloc(long long key, int priority){
     Treap *tmp = (Treap *)malloc(sizeof(Treap)); 
     tmp->key = key;
     tmp->priority = priority;
     tmp->flip=false;
+    tmp->lazy=LLONG_MAX;
     tmp->size=1;
     tmp->sum=key;
     tmp->l=NULL;
@@ -70,6 +72,31 @@ void push(Treap *t){
         }
     }
 }
+void push2(Treap *t){
+    if(t->lazy!=LLONG_MAX){
+        t->key=t->lazy;
+        if(t->r==NULL&&t->l==NULL){
+            t->lazy=LLONG_MAX;
+            return;
+        }else if(t->r==NULL){
+            if(t->l->lazy>t->lazy){
+                t->l->lazy=t->lazy;
+            }
+        }else if(t->l==NULL){
+            if(t->r->lazy>t->lazy){
+                t->r->lazy=t->lazy;
+            }
+        }else{
+            if(t->l->lazy>t->lazy){
+                t->l->lazy=t->lazy;
+            }
+            if(t->r->lazy>t->lazy){
+                t->r->lazy=t->lazy;
+            }
+        }
+        t->lazy=LLONG_MAX;
+    }
+}
 void heapify(Treap *t){
     Treap* max=t;
     if(t->l!=NULL && t->l->priority>max->priority){
@@ -113,6 +140,7 @@ void INORDER_TRAVERSAL(Treap* t){
 
 void kth(Treap* t,int k, Treap** kk){
     push(t);
+    push2(t);
     if(t->l==NULL){
         if(k==1){
             *kk=t;
@@ -139,6 +167,7 @@ void kth(Treap* t,int k, Treap** kk){
 void split(Treap* t,int k, Treap** a, Treap** b,  Treap* kk)
 { 
     push(t);
+    push2(t);
     if(t==kk){
         *a=kk;
         *b=kk->r;
@@ -183,7 +212,9 @@ void merge (Treap **t, Treap *l, Treap *r) {
         return;
     }
     push(l);
+    push2(l);
     push(r);
+    push2(r);
     if (l->priority >= r->priority){
         if(l->r==NULL){
             *t=l;
@@ -246,10 +277,20 @@ void shift(Treap** t,long long l,long long r,long long x,long long y){
     merge(t, tmp, t5);
 }
 void reverse(Treap** t,long long l,long long r){
-    Treap *t1=NULL,*t2=NULL,*t3=NULL,*t4=NULL,*t5=NULL,*tmp=NULL;
+    Treap *t1=NULL,*t2=NULL,*t3=NULL,*tmp=NULL;
     splits(*t,l-1,&t1,&tmp);
     splits(tmp,r-l+1,&t2,&t3);
     t2->flip=(t2->flip==false);
+    merge(&tmp, t1, t2);
+    merge(t, tmp, t3);
+}
+void update(Treap** t,long long l,long long r,long long key){
+    Treap *t1=NULL,*t2=NULL,*t3=NULL,*tmp=NULL;
+    splits(*t,l-1,&t1,&tmp);
+    splits(tmp,r-l+1,&t2,&t3);
+    if(t2->lazy>key){
+        t2->lazy=key;
+    }
     merge(&tmp, t1, t2);
     merge(t, tmp, t3);
 }
@@ -303,7 +344,8 @@ int main() {
             }
             shift(&root,l,r,x,y);
         }else if(command[i][0]==5){
-            continue;
+            long long l=command[i][1],r=command[i][2], key=command[i][3];
+            update(&root,l,r,key);
         }else if(command[i][0]==6){
             printf("%lld\n",sums(root,command[i][1],command[i][2]));
         }
