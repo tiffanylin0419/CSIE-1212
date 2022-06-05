@@ -117,7 +117,6 @@ void push(Treap *t){
 }
 void push2(Treap *t){
     if(t->lazy!=-1){
-        printf("hi %lld ",t->key);
         if(t->key>t->lazy){
             t->key=t->lazy;
         }
@@ -332,7 +331,9 @@ void update(Treap* t,long long key){
     if(t->key>key){
         t->key=key;
     }
-    if(t->larger<key && key<t->largest){
+    if(key>=t->largest){//?
+        return;
+    }if(t->larger<key && key<t->largest){
         t->sum-=t->large_num*(t->largest-key);
         t->largest=key;
 
