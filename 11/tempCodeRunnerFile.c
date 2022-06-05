@@ -1,2 +1,2 @@
 
-                y=command[i][2];
+    //printf("%d\n",t->priority);
