@@ -350,7 +350,7 @@ void update(Treap* t,long long key){
             update(t->l,key);
         }else{
             update(t->l,key);
-            update(t->l,key);
+            update(t->r,key);
         }
         
     }
