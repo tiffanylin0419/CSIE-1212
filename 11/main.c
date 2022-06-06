@@ -43,55 +43,6 @@ int random_num(){
     return rand();
 }
 
-void update_nodes(Treap* t){
-    t->size = 1;
-    t->sum = t->key;
-    t->largest = t->key;
-    t->larger=0;
-    t->large_num=1;
-    if (t->l!=NULL){
-        t->size+=t->l->size;
-        t->sum+=t->l->sum;
-        if(t->largest<t->l->largest){
-            t->larger=t->largest;
-            t->largest=t->l->largest;
-            t->large_num=t->l->large_num;
-            if(t->larger<t->l->larger){
-                t->larger=t->l->larger;
-            }
-        }else if(t->largest==t->l->largest){
-            t->large_num+=t->l->large_num;
-            if(t->larger<t->l->larger){
-                t->larger=t->l->larger;
-            }
-        }else{
-            if(t->larger<t->l->largest){
-                t->larger=t->l->largest;
-            }
-        }
-    }
-    if (t->r!=NULL){
-        t->size+=t->r->size;
-        t->sum+=t->r->sum;
-        if(t->largest<t->r->largest){
-            t->larger=t->largest;
-            t->largest=t->r->largest;
-            t->large_num=t->r->large_num;
-            if(t->larger<t->r->larger){
-                t->larger=t->r->larger;
-            }
-        }else if(t->largest==t->r->largest){
-            t->large_num+=t->r->large_num;
-            if(t->larger<t->r->larger){
-                t->larger=t->r->larger;
-            }
-        }else{
-            if(t->larger<t->r->largest){
-                t->larger=t->r->largest;
-            }
-        }
-    }
-}
 void push(Treap *t){
     if(t->flip){
         t->flip=false;
@@ -120,22 +71,76 @@ void push2(Treap *t){
         if(t->key>t->lazy){
             t->key=t->lazy;
         }
-        t->sum-=t->large_num*(t->largest-t->lazy);
-        t->largest=t->lazy;
+        if(t->largest>t->lazy){
+            t->sum-=t->large_num*(t->largest-t->lazy);
+            t->largest=t->lazy;
+        }
 
         if(t->r!=NULL){
-            if(t->r->lazy>t->lazy){
+            if(t->r->lazy==-1||t->r->lazy>t->lazy){
                 t->r->lazy=t->lazy;
             } 
         }
         if(t->l!=NULL){
-            if(t->l->lazy>t->lazy){
+            if(t->l->lazy==-1||t->l->lazy>t->lazy){
                 t->l->lazy=t->lazy;
             } 
         }
         t->lazy=-1;
     }
 }
+void update_nodes(Treap* t){
+    t->size = 1;
+    t->sum = t->key;
+    t->largest = t->key;
+    t->larger=0;
+    t->large_num=1;
+    if (t->l!=NULL){
+        push2(t->l);
+        t->size+=t->l->size;
+        t->sum+=t->l->sum;
+        if(t->largest<t->l->largest){
+            t->larger=t->largest;
+            t->largest=t->l->largest;
+            t->large_num=t->l->large_num;
+            if(t->larger<t->l->larger){
+                t->larger=t->l->larger;
+            }
+        }else if(t->largest==t->l->largest){
+            t->large_num+=t->l->large_num;
+            if(t->larger<t->l->larger){
+                t->larger=t->l->larger;
+            }
+        }else{
+            if(t->larger<t->l->largest){
+                t->larger=t->l->largest;
+            }
+        }
+    }
+    if (t->r!=NULL){
+        push2(t->r);
+        t->size+=t->r->size;
+        t->sum+=t->r->sum;
+        if(t->largest<t->r->largest){
+            t->larger=t->largest;
+            t->largest=t->r->largest;
+            t->large_num=t->r->large_num;
+            if(t->larger<t->r->larger){
+                t->larger=t->r->larger;
+            }
+        }else if(t->largest==t->r->largest){
+            t->large_num+=t->r->large_num;
+            if(t->larger<t->r->larger){
+                t->larger=t->r->larger;
+            }
+        }else{
+            if(t->larger<t->r->largest){
+                t->larger=t->r->largest;
+            }
+        }
+    }
+}
+
 
 void heapify(Treap *t){
     Treap* max=t;
