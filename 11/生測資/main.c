@@ -43,7 +43,7 @@ int random_num(){
     return rand();
 }
 
-void push(Treap *t){
+void push(Treap *t){  
     if(t->flip){
         t->flip=false;
         if(t->r==NULL&&t->l==NULL){
@@ -67,28 +67,31 @@ void push(Treap *t){
             
 }
 void push2(Treap *t){
+
     if(t->lazy!=-1){
         if(t->key>t->lazy){
             t->key=t->lazy;
         }
-        if(t->largest>t->lazy){
+        if(t->largest>t->lazy){//?
             t->sum-=t->large_num*(t->largest-t->lazy);
             t->largest=t->lazy;
         }
+        
 
         if(t->r!=NULL){
-            if(t->r->lazy==-1||t->r->lazy>t->lazy){
+            if(t->r->lazy==-1||t->r->lazy>t->lazy){//?
                 t->r->lazy=t->lazy;
             } 
         }
         if(t->l!=NULL){
-            if(t->l->lazy==-1||t->l->lazy>t->lazy){
+            if(t->l->lazy==-1||t->l->lazy>t->lazy){//?
                 t->l->lazy=t->lazy;
             } 
         }
         t->lazy=-1;
     }
 }
+
 void update_nodes(Treap* t){
     t->size = 1;
     t->sum = t->key;
@@ -96,7 +99,7 @@ void update_nodes(Treap* t){
     t->larger=0;
     t->large_num=1;
     if (t->l!=NULL){
-        push2(t->l);
+        push2(t->l);//?
         t->size+=t->l->size;
         t->sum+=t->l->sum;
         if(t->largest<t->l->largest){
@@ -118,7 +121,7 @@ void update_nodes(Treap* t){
         }
     }
     if (t->r!=NULL){
-        push2(t->r);
+        push2(t->r);//?
         t->size+=t->r->size;
         t->sum+=t->r->sum;
         if(t->largest<t->r->largest){
@@ -176,7 +179,7 @@ void INORDER_TRAVERSAL(Treap* t){
     if(t->l!=NULL){
         INORDER_TRAVERSAL(t->l);
     }
-    printf("%lld: %lld %lld %lld\n",t->key,t->largest,t->larger,t->lazy);
+    printf("%lld: %lld %lld %lld %lld\n",t->key,t->largest,t->larger,t->lazy,t->sum);
     //printf("%d\n",t->priority);
     if(t->r!=NULL){
         INORDER_TRAVERSAL(t->r);
@@ -286,6 +289,8 @@ long long sums(Treap *t,int left,int right){
     Treap *t1=NULL,*t2=NULL,*t3=NULL,*tmp=NULL;
     splits(t,left-1,&t1,&tmp);
     splits(tmp,right-left+1,&t2,&t3);
+    INORDER_TRAVERSAL(t2);
+    printf("\n");
     long long sum=t2->sum;
     merge (&tmp, t1, t2);
     merge (&t, tmp, t3);
@@ -349,13 +354,16 @@ void update(Treap* t,long long key){
             t->r->lazy=key;
         }
     }else{
+        //if(t->l==NULL && t->r==NULL){
+        //    printf("%lld %lld %lld %lld ",key,t->key,t->largest,t->larger);
+        //}
         if(t->l==NULL){
             update(t->r,key);
         }else if(t->r==NULL){
             update(t->l,key);
         }else{
             update(t->l,key);
-            update(t->r,key);
+            update(t->r,key);//?
         }
         update_nodes(t);
     }
@@ -366,9 +374,13 @@ void updates(Treap** t,long long l,long long r,long long key){
     splits(*t,l-1,&t1,&tmp);
     splits(tmp,r-l+1,&t2,&t3);
     update_nodes(t2);
+    INORDER_TRAVERSAL(t2);
+    printf("\n");
     if(key<t2->largest){
         update(t2,key);
     }
+    INORDER_TRAVERSAL(t2);
+    printf("\n");
     merge(&tmp, t1, t2);
     merge(t, tmp, t3);
 }
@@ -379,59 +391,75 @@ void updates(Treap** t,long long l,long long r,long long key){
 
 long long command[100000][5]={0};
 int main() {
-    // input
-    scanf("%d %d",&N,&Q);
-    for(int i=0;i<N;i++){
-        scanf("%lld",&arr[i]);
-    }
-    Treap* root=build(arr,N);
-    for(int i=0;i<Q;i++){
-        scanf("%lld",&command[i][0]);
-        if(command[i][0]==1){
-            scanf("%lld %lld",&command[i][1],&command[i][2]);
-        }else if(command[i][0]==2){
-            scanf("%lld",&command[i][1]);
-        }else if(command[i][0]==3){
-            scanf("%lld %lld",&command[i][1],&command[i][2]);
-        }else if(command[i][0]==4){
-            scanf("%lld %lld %lld %lld",&command[i][1],&command[i][2],&command[i][3],&command[i][4]);
-        }else if(command[i][0]==5){
-            scanf("%lld %lld %lld",&command[i][1],&command[i][2],&command[i][3]);
-        }else{
-            scanf("%lld %lld",&command[i][1],&command[i][2]);
+    int h=8;
+    for(int gg=h;gg<h+1;gg++){
+        char filename[20];
+        sprintf(filename,"test%d.txt",gg);
+        FILE *f =fopen(filename, "r");
+        // input
+        fscanf(f,"%d %d",&N,&Q);
+        for(int i=0;i<N;i++){
+            fscanf(f,"%lld",&arr[i]);
         }
-    }
-
-    //command
-    for(int i=0;i<Q;i++){
-        //INORDER_TRAVERSAL(root);
-        if(command[i][0]==1){
-            insert(&root,command[i][1],command[i][2]);
-        }else if(command[i][0]==2){
-            delete(&root,command[i][1]);
-        }else if(command[i][0]==3){
-            long long l=command[i][1],r=command[i][2];
-            reverse(&root,l,r);
-        }else if(command[i][0]==4){
-            long long l,r,x,y;
-            if(command[i][1]<command[i][3]){
-                l=command[i][1];
-                r=command[i][2];
-                x=command[i][3];
-                y=command[i][4];
+        Treap* root=build(arr,N);
+        for(int i=0;i<Q;i++){
+            fscanf(f,"%lld",&command[i][0]);
+            if(command[i][0]==1){
+                fscanf(f,"%lld %lld",&command[i][1],&command[i][2]);
+            }else if(command[i][0]==2){
+                fscanf(f,"%lld",&command[i][1]);
+            }else if(command[i][0]==3){
+                fscanf(f,"%lld %lld",&command[i][1],&command[i][2]);
+            }else if(command[i][0]==4){
+                fscanf(f,"%lld %lld %lld %lld",&command[i][1],&command[i][2],&command[i][3],&command[i][4]);
+            }else if(command[i][0]==5){
+                fscanf(f,"%lld %lld %lld",&command[i][1],&command[i][2],&command[i][3]);
             }else{
-                l=command[i][3];
-                r=command[i][4];
-                x=command[i][1];
-                y=command[i][2];
+                fscanf(f,"%lld %lld",&command[i][1],&command[i][2]);
             }
-            shift(&root,l,r,x,y);
-        }else if(command[i][0]==5){
-            long long l=command[i][1],r=command[i][2], key=command[i][3];
-            updates(&root,l,r,key);
-        }else if(command[i][0]==6){
-            printf("%lld\n",sums(root,command[i][1],command[i][2]));
-            //INORDER_TRAVERSAL(root);
         }
+        fclose(f);
+
+        sprintf(filename,"2out%d.txt",gg);
+        remove(filename);
+        FILE *ff =fopen(filename, "a");    
+        
+
+
+        //command
+        for(int i=0;i<Q;i++){
+            INORDER_TRAVERSAL(root);
+            printf("\n");
+            if(command[i][0]==1){
+                insert(&root,command[i][1],command[i][2]);
+            }else if(command[i][0]==2){
+                delete(&root,command[i][1]);
+            }else if(command[i][0]==3){
+                long long l=command[i][1],r=command[i][2];
+                reverse(&root,l,r);
+            }else if(command[i][0]==4){
+                long long l,r,x,y;
+                if(command[i][1]<command[i][3]){
+                    l=command[i][1];
+                    r=command[i][2];
+                    x=command[i][3];
+                    y=command[i][4];
+                }else{
+                    l=command[i][3];
+                    r=command[i][4];
+                    x=command[i][1];
+                    y=command[i][2];
+                }
+                shift(&root,l,r,x,y);
+            }else if(command[i][0]==5){
+                long long l=command[i][1],r=command[i][2], key=command[i][3];
+                updates(&root,l,r,key);
+            }else if(command[i][0]==6){
+                fprintf(ff,"%lld\n",sums(root,command[i][1],command[i][2]));
+                //INORDER_TRAVERSAL(root);
+            }
+        }
+        
+        fclose(ff);
     }
 }
