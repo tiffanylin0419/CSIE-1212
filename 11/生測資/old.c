@@ -13,7 +13,7 @@ long long sum[200001]={0};
 int command[100000][5]={0};
 int main() {
     // save input info in command
-    int gg=8;
+    int gg=5;
     char filename[20];
     sprintf(filename,"test%d.txt",gg);
     FILE *f =fopen(filename, "r");

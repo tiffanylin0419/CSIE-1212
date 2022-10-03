@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+//GRAPH
 typedef struct node {
   int data;
   struct node* next;
 }NODE;
-
 // Create node
 NODE* createNode(int data) {
   NODE* newNode = malloc(sizeof(NODE));
@@ -14,12 +14,10 @@ NODE* createNode(int data) {
   newNode->next = NULL;
   return newNode;
 }
-
 typedef struct Graph {
   int group;
   NODE** connectLists;
 }GRAPH;
-
 // Create a graph
 GRAPH* createGraph(int num) {
   GRAPH* graph = malloc(sizeof(GRAPH));
@@ -29,7 +27,6 @@ GRAPH* createGraph(int num) {
     graph->connectLists[i] = NULL;
   return graph;
 }
-
 // Add edge
 void addConnect(GRAPH* graph, int a, int b) {
   // a to b 
@@ -46,7 +43,6 @@ void addConnect(GRAPH* graph, int a, int b) {
   }
   graph->connectLists[a-1] = newNode;
 }
-
 // Print graph
 void printGraph(GRAPH* graph) {
   for (int v = 0; v < graph->group; v++) {
@@ -60,10 +56,11 @@ void printGraph(GRAPH* graph) {
   }
 }
 
+
+//TREE
 typedef struct leaf {
   int up;
 }LEAF;
-
 // Create a tree
 LEAF** createTree(int num) {
   LEAF **tree= (LEAF **)malloc(sizeof(LEAF *)*num);
@@ -74,13 +71,12 @@ LEAF** createTree(int num) {
   return tree;
 }
 
+//QUEUE
 typedef struct Queue {
   int head;
   int tail;
   int* connectLists;
 }QUEUE;
-
-// Create a graph
 QUEUE* createQueue(int num) {
   QUEUE* queue = malloc(sizeof(QUEUE));
   queue->head=0;
@@ -90,21 +86,19 @@ QUEUE* createQueue(int num) {
     queue->connectLists[i] = 0;
   return queue;
 }
-
 void enqueue(QUEUE* queue,int data){
   queue->connectLists[queue->tail]=data;
   queue->tail++;
 }
-
 int dequeue(QUEUE* queue){
   int data=queue->connectLists[queue->head];
   queue->head++;
   return data;
 }
 
-//save tree in array
+//save tree in array using queue
 void saveTree(GRAPH* graph, LEAF* tree[], int data, int up) {//initial up=0
-  QUEUE* queue= createQueue(1000000);//?
+  QUEUE* queue= createQueue(1000000);
   enqueue(queue,data);
   tree[data-1]->up=up;
   while(queue->head!=queue->tail){
@@ -154,45 +148,24 @@ void Bear(){
       scanf("%d %d",&a,&b);
       addConnect(graph, a,b);
     }
-    //printGraph(graph);
+
     //O(N)
     LEAF **tree_capital= createTree(N);
     LEAF **tree_resort= createTree(N);
-    
     saveTree(graph,tree_capital, S, 0);
-    /*
-    for(int i=0;i<N;i++){
-      printf("%d\n",tree_capital[i]->up);
-    }
-    printf("\n");
-    */
     saveTree(graph,tree_resort, R, 0) ;
-    /*
-    for(int i=0;i<N;i++){
-      printf("%d\n",tree_resort[i]->up);
-    }
-    printf("\n");
-    */
-    
+
     //O(N)
     LEAF **tree_answer= createTree(N);
-    
     for(int i=0;i<N;i++){
       findAns(tree_capital,tree_resort,tree_answer,i+1);
     }
-    
-   
-    //for(int i=0;i<N;i++){
-    //  printf("%d, ",tree_answer[i]->up);
-    //}
-    
     
     int n=0;
     for(int i=0;i<Q;i++){
       scanf("%d",&n);
       printf("%d\n",tree_answer[n-1]->up);
     }
-    
     return; 
 }
 
